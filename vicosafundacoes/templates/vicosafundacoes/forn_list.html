@@ -15,12 +15,11 @@
         <button onclick="abrir_modal_forn()" class="btn btn-outline btn-lg" >
             <i class="flaticon2-add"></i>
         </button>
-        <table class="table table-head-custom" id="kt_pedido">
+        <table class="table table-head-custom" id="kt_forn">
             <thead>
                 <tr>
                     <th class="datatable-row datatable-row-even">ID</th>
                     <th class="datatable-row datatable-row-even">Fornecedor</th>
-                    <th class="datatable-row datatable-row-even">Representante / Contato</th>
                     <th class="datatable-row datatable-row-even">Cnpj</th>
                     <th class="datatable-row datatable-row-even">Inscrição Municipal / Estadual</th>
                     <th class="datatable-row datatable-row-even">Ações</th>
@@ -31,7 +30,7 @@
         </table> 
     </div>
 </div>
-<div class="modal fade" id="frm_produto_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="frm_forn_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
         <div class="modal-content">
             <div class="modal-header">
@@ -46,48 +45,49 @@
                         <a id="prod_aba1" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1">Fornecedor</a>
                     </li>
                     <li class="nav-item">
-                        <a id="prod_aba2"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Contato</a>
+                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Contato</a>
                     </li> 
                 </ul>
                 <div class="tab-content mt-5" id="myTabContent">
                     <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" arial-labelledby="kt_tab_pane_1">   
-                        <form method="post" id="frm_produto">
+                        <form method="post" id="frm_forn">
                             {% csrf_token %}
-                            <input type="hidden" id="prod_id" name="prod_id">
+                            <input type="hidden" id="forn_id" name="forn_id">
                             <div class="form-group">
-                                <label class="font-weight-bold "for="prod_nome"> Nome </label>
-                                <input type="text" class="form-control " id="prod_nome" name="prod_nome" placeholder="Nome" required>
+                                <label class="font-weight-bold "for="forn_nome"> Nome </label>
+                                <input type="text" class="form-control " id="forn_nome" name="forn_nome" placeholder="Nome" required>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold "for="prod_nome"> CNPJ</label>
-                                <input type="text" class="form-control " id="prod_nome" name="prod_nome" placeholder="CNPJ" required>
+                                <label class="font-weight-bold "for="forn_cnpj"> CNPJ</label>
+                                <input type="text" class="form-control " id="forn_cnpj" name="forn_cnpj" placeholder="CNPJ" required>
                             </div>
                             <div class="form-group">
-                                <label class="font-weight-bold "for="prod_nome"> Inscrição
+                                <label class="font-weight-bold "for="forn_ies"> Inscrição
                                     Municipal/ Inscrição Estadual</label>
-                                <input type="text" class="form-control " id="prod_nome" name="prod_nome" placeholder="Inscrição Municipal / Inscrição Estadual" required>
+                                <input type="text" class="form-control " id="forn_ies" name="forn_ies" placeholder="Inscrição Municipal / Inscrição Estadual" required>
                             </div>
                         </form>
                     </div>                  
                     <div class="tab-pane fade "  id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
-                        <button id="adicionar_produto_arquivo" class="btn btn-light-success font-weight-bold mr-4"> Novo </button>   
-                        <table class="table table-head-custom table-hover bg-white" id="kt_produto_arquivo">
-                            <thead class="thead bg-primary-o-40 text-white"> 
+                        <button onclick="abrir_modal_forn()" class="btn btn-outline btn-lg" >
+                            <i class="flaticon2-add"></i>
+                        </button>
+                        <table class="table table-head-custom" id="kt_forn_cont">
+                            <thead>
                                 <tr>
-                                    <th class="datatable-row datatable-row-even" data-field="prod_arq_id"><i class="pr-1"></i>Id</th><!--ped_pro_id=> é especificado para ser buscado no js-->
-                                    <th class="datatable-row datatable-row-even" data-field="prod_arq_path"><i class="pr-1"></i>Arquivo</th><!--produto=> é especificado para ser buscado no js para que seja carregado o select2-->
-                                    <th class="datatable-row datatable-row-even" data-field="prod_arq_nome"><i class="pr-1"></i>Nome</th><!--ped_pro_qtd=> é especificado para ser buscado no js-->
-                                    <th class="datatable-row datatable-row-even" data-field="prod_arq_descricao"><i class="pr-1"></i>Descrição</th><!--ped_pro_id=> é especificado para ser buscado no js-->
-                                    <th class="datatable-row datatable-row-even" data-field="acao"><i class="pr-1"></i>Ações</th>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Responsável</th>
+                                    <th class="datatable-row datatable-row-even">Contato</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
                                 </tr>
-                            </thead> 
+                            </thead>
                             <tbody>
                             </tbody>
-                        </table>    
+                        </table> 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
-                        <button type="button" id="btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                        <button onclick="forn_add()"type="button" id="forn_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
                     </div>
                 </div>
             </div>                
