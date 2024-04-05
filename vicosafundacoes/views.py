@@ -96,4 +96,90 @@ def forn_del(request):
             'aviso': 'Excluido com sucesso!'},
             status=200) 
 
+##############################################################################################
+#                               Fornecedor contato                                           #
+##############################################################################################
+def ctt_list(request):
+    try:
+        dados= FornecedorContatoSerializer(FornecedorContato.objects.all().order_by('forn_ctt_nome'), many=True)
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error,
+            'aviso': 'Problema ao consultar os dados'},
+            status=500)
+    else:
+        return JsonResponse({'dados':dados.data})
+
+
+def ctt_atb(request):
+    try:
+        item = FornecedorContatoSerializer(FornecedorContato.objects.get(pk=request.GET['forn_ctt_id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+    
+ 
+def ctt_add(request):
+    try:
+        forn = Fornecedor()
+        forn.forn_ctt_nome = request.POST['forn_nome']
+        forn.forn_ctt_num = request.POST['forn_ctt_num']
+        forn.forn_ctt_ativo = request.POST['forn_ctt_ativo']
+        forn.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar o Produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
+
+def ctt_edt(request):
+    try:
+        item=FornecedorContato.objects.get(pk=request.POST['forn_ctt_id'])
+        if request.method=="POST":
+            item.forn_ctt_id=request.POST['forn_ctt_id']
+            item.forn_ctt_num=request.POST['forn_ctt_num']
+            item.forn_ctt_ativo=request.POST['forn_ctt_ativo']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar o Produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+
+
+def forn_del(request):
+    try:
+        if request.method=="POST":
+            item=Fornecedor.objects.get(pk=request.POST['forn_id'])
+            item.delete()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar o Produto, '},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'},
+            status=200) 
         

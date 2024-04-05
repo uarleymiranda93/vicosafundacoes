@@ -124,6 +124,11 @@ function abrir_modal_forn(){
     $('#frm_forn_modal').modal('show');
 }
 
+function abrir_modal_ctt(){
+    $('#ctt_btn_salvar').val('insert');
+    $('#frm_ctt_modal').modal('show');
+}
+
 function forn_add(){
     alert($('#forn_btn_salvar').val())
     var url
@@ -231,6 +236,121 @@ function forn_del(forn_id) {
                 if (jqXHR.status === 200 && jqXHR.readyState === 4){
                     $('#kt_forn').DataTable().ajax.reload();
                     $('#frm_forn_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
+
+function ctt_add(){
+    var url;
+
+    if($('#ctt_btn_salvar').val() == 'update'){
+        url = '/vicosafundacoes/ctt_edt/'
+    }else{
+        url = '/vicosafundacoes/ctt_add/'
+    }
+
+    var frm_ctt = new FormData(document.getElementById('frm_ctt'));
+
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ctt,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ctt').DataTable().ajax.reload();
+            $('#frm_ctt_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function ctt_edt(forn_ctt_id){
+    $.getJSON('/vicosafundacoes/ctt_atb/',
+        {
+            forn_ctt_id: forn_ctt_id
+        }
+    ).done(function (item) {
+        $('#forn_ctt_id').val(item.forn_ctt_id);
+        $('#forn_ctt_nome').val(item.forn_ctt_nome);
+        $('#forn_ctt_num').val(item.forn_ctt_num);
+        $('#forn_ctt_ativo').val(item.forn_ctt_ativo);
+        $('#ctt_btn_salvar').val('update');
+        // KTDatatablesDataSourceProdutoArquivo.init();
+        $('#frm_ctt_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ctt_del(forn_ctt_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + forn_ctt_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("forn_ctt_id", forn_ctt_id);
+
+            $.ajax({
+                method: 'POST',
+                url: '/vicosafundacoes/ctt_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ctt').DataTable().ajax.reload();
+                    $('#frm_ctt_modal').modal('hide');
                     Swal.close();
                 }
             })

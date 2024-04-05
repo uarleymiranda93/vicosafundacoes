@@ -69,10 +69,10 @@
                         </form>
                     </div>                  
                     <div class="tab-pane fade "  id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
-                        <button onclick="abrir_modal_forn()" class="btn btn-outline btn-lg" >
+                        <button onclick="abrir_modal_ctt()" class="btn btn-outline btn-lg" >
                             <i class="flaticon2-add"></i>
                         </button>
-                        <table class="table table-head-custom" id="kt_forn_cont">
+                        <table class="table table-head-custom" id="kt_forn_ctt">
                             <thead>
                                 <tr>
                                     <th class="datatable-row datatable-row-even">ID</th>
@@ -89,6 +89,42 @@
                         <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
                         <button onclick="forn_add()"type="button" id="forn_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
                     </div>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ctt_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Contato</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <div class="tab-content" id="myTabContent">
+                    <form method="post" id="frm_ctt">
+                        {% csrf_token %}
+                        <input type="hidden" id="forn_ctt_id" name="forn_ctt_id">
+                        <div class="form-group col-sm-12">
+                            <label class="font-weight-bold "for="forn_ctt_nome">Responsável</label>
+                            <input type="text" class="form-control " id="forn_ctt_nome" name="forn_ctt_nome" placeholder="Nome" required>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label class="font-weight-bold "for="forn_ctt_nome">Contato</label>
+                            <input type="text" class="form-control " id="forn_cnpj" name="forn_ctt_nome" placeholder="CNPJ" required>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="forn_ctt_ativo">Ativo</label>
+                            <input type="checkbox" id="forn_ctt_ativo" name="forn_ctt_ativo">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                            <button onclick="forn_add()"type="button" id="forn_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                        </div>
+                    </form> 
                 </div>
             </div>                
         </div>
