@@ -220,6 +220,9 @@ var tabela_ctt = function() {
 
 jQuery(document).ready(function() {
     tabela_forn.init()
+
+    pesq_impacto('#cat_imp')
+    pesq_tipo('#cat_tip')
     
 });
 

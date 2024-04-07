@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from .models import *
+from categorias.models import *
 from vicosafundacoes.serializador import *
 
 # Create your views here.
@@ -43,6 +44,8 @@ def forn_add(request):
         forn.forn_nome = request.POST['forn_nome']
         forn.forn_cnpj = request.POST['forn_cnpj']
         forn.forn_ies = request.POST['forn_ies']
+        forn.cat_imp = CategoriaImpacto(cat_imp = request.POST['cat_imp'])
+        forn.cat_tip = CategoriaTipo(cat_tip = request.POST['cat_tip'])
         forn.save()
     except(Exception,DatabaseError) as error:
         print(error)
