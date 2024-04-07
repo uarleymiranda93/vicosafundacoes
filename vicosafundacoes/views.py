@@ -127,10 +127,14 @@ def ctt_atb(request):
  
 def ctt_add(request):
     try:
-        forn = Fornecedor()
-        forn.forn_ctt_nome = request.POST['forn_nome']
-        forn.forn_ctt_num = request.POST['forn_ctt_num']
-        forn.forn_ctt_ativo = request.POST['forn_ctt_ativo']
+        print(request.POST['forn_id'])
+        forn = FornecedorContato()
+        forn.forn_ctt_nome = request.POST['forn_ctt_nome']
+        forn.forn_ctt_tel = request.POST['forn_ctt_tel']
+        forn.forn_ctt_email = request.POST['forn_ctt_email']
+        forn.forn = Fornecedor(forn_id=request.POST['forn_id'])
+        if 'forn_ctt_ativo' in request.POST:
+            forn.forn_ctt_ativo = True
         forn.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -150,8 +154,10 @@ def ctt_edt(request):
         item=FornecedorContato.objects.get(pk=request.POST['forn_ctt_id'])
         if request.method=="POST":
             item.forn_ctt_id=request.POST['forn_ctt_id']
-            item.forn_ctt_num=request.POST['forn_ctt_num']
-            item.forn_ctt_ativo=request.POST['forn_ctt_ativo']
+            item.forn_ctt_tel=request.POST['forn_ctt_tel']
+            item.forn_ctt_email=request.POST['forn_ctt_email']
+            if 'forn_ctt_ativo' in request.POST:
+                item.forn_ctt_ativo=True
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -166,10 +172,10 @@ def ctt_edt(request):
             status=200)
 
 
-def forn_del(request):
+def ctt_del(request):
     try:
         if request.method=="POST":
-            item=Fornecedor.objects.get(pk=request.POST['forn_id'])
+            item=FornecedorContato.objects.get(pk=request.POST['forn_ctt_id'])
             item.delete()
     except(Exception,DatabaseError) as error:
         print(error)

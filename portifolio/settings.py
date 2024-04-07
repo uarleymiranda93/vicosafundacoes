@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'chatbot.apps.ChatbotConfig',
     'vicosafundacoes.apps.VicosafundacoesConfig',
     'base.apps.BaseConfig',
+    'categorias.apps.CategoriasConfig',
 ]
 
 MIDDLEWARE = [

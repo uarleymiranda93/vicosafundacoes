@@ -47,24 +47,44 @@
                     <li class="nav-item">
                         <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Contato</a>
                     </li> 
+                    <li class="nav-item">
+                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Avaliação</a>
+                    </li> 
+                    <li class="nav-item">
+                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Monitoramento</a>
+                    </li> 
                 </ul>
                 <div class="tab-content mt-5" id="myTabContent">
                     <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" arial-labelledby="kt_tab_pane_1">   
                         <form method="post" id="frm_forn">
                             {% csrf_token %}
                             <input type="hidden" id="forn_id" name="forn_id">
-                            <div class="form-group">
-                                <label class="font-weight-bold "for="forn_nome"> Nome </label>
-                                <input type="text" class="form-control " id="forn_nome" name="forn_nome" placeholder="Nome" required>
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="font-weight-bold "for="forn_nome"> Nome </label>
+                                    <input type="text" class="form-control " id="forn_nome" name="forn_nome" placeholder="Nome" required>
+                                </div>
+                                <div class="form-group col-lg-6">
+                                    <label class="font-weight-bold "for="forn_cnpj"> CNPJ</label>
+                                    <input type="text" class="form-control " id="forn_cnpj" name="forn_cnpj" placeholder="CNPJ" required>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold "for="forn_cnpj"> CNPJ</label>
-                                <input type="text" class="form-control " id="forn_cnpj" name="forn_cnpj" placeholder="CNPJ" required>
+                            <div class="row">
+                                <div class="form-group col-lg-6">
+                                    <label class="font-weight-bold "for="forn_ies"> Inscrição
+                                        Municipal/ Inscrição Estadual</label>
+                                    <input type="text" class="form-control " id="forn_ies" name="forn_ies" placeholder="Inscrição Municipal / Inscrição Estadual" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="font-weight-bold" for="endereco">Tipo</label>
+                                    <select class="form-control" id="endereco" name="endereco"></select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="font-weight-bold "for="forn_ies"> Inscrição
-                                    Municipal/ Inscrição Estadual</label>
-                                <input type="text" class="form-control " id="forn_ies" name="forn_ies" placeholder="Inscrição Municipal / Inscrição Estadual" required>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="font-weight-bold"for="endereco">Impacto </label>
+                                    <select class="form-control " id="endereco" name="endereco"></select>
+                                </div>
                             </div>
                         </form>
                     </div>                  
@@ -72,12 +92,14 @@
                         <button onclick="abrir_modal_ctt()" class="btn btn-outline btn-lg" >
                             <i class="flaticon2-add"></i>
                         </button>
-                        <table class="table table-head-custom" id="kt_forn_ctt">
+                        <table class="table table-head-custom" id="kt_ctt">
                             <thead>
                                 <tr>
                                     <th class="datatable-row datatable-row-even">ID</th>
-                                    <th class="datatable-row datatable-row-even">Responsável</th>
                                     <th class="datatable-row datatable-row-even">Contato</th>
+                                    <th class="datatable-row datatable-row-even">Telefone</th>
+                                    <th class="datatable-row datatable-row-even">E-mail</th>
+                                    <th class="datatable-row datatable-row-even">Ativo</th>
                                     <th class="datatable-row datatable-row-even">Ações</th>
                                 </tr>
                             </thead>
@@ -109,12 +131,16 @@
                         {% csrf_token %}
                         <input type="hidden" id="forn_ctt_id" name="forn_ctt_id">
                         <div class="form-group col-sm-12">
-                            <label class="font-weight-bold "for="forn_ctt_nome">Responsável</label>
-                            <input type="text" class="form-control " id="forn_ctt_nome" name="forn_ctt_nome" placeholder="Nome" required>
+                            <label class="font-weight-bold "for="forn_ctt_nome">Contato</label>
+                            <input type="text" class="form-control " id="forn_ctt_nome" name="forn_ctt_nome" placeholder="Contato" required>
                         </div>
                         <div class="form-group col-sm-12">
-                            <label class="font-weight-bold "for="forn_ctt_nome">Contato</label>
-                            <input type="text" class="form-control " id="forn_cnpj" name="forn_ctt_nome" placeholder="CNPJ" required>
+                            <label class="font-weight-bold "for="forn_ctt_tel">Telefone</label>
+                            <input type="text" class="form-control " id="forn_ctt_tel" name="forn_ctt_tel" placeholder="Telefone" required>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label class="font-weight-bold "for="forn_ctt_email">E-mail</label>
+                            <input type="text" class="form-control " id="forn_ctt_email" name="forn_ctt_email" placeholder="E-mail" required>
                         </div>
                         <div class="form-group col-sm-12">
                             <label for="forn_ctt_ativo">Ativo</label>
@@ -122,7 +148,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
-                            <button onclick="forn_add()"type="button" id="forn_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                            <button onclick="ctt_add()"type="button" id="ctt_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
                         </div>
                     </form> 
                 </div>

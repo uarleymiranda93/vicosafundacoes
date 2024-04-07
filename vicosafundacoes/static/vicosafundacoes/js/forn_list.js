@@ -86,6 +86,7 @@ var tabela_forn = function() {
                 {
                     targets: [-1],
                     orderable: false,
+                    
                     render: function(data, type, row) {
                         return '\
                             <button type="button" onclick="forn_edt(' + row.forn_id + ')" class="btn btn-light-success btn-icon btn-circle"\
@@ -111,6 +112,110 @@ var tabela_forn = function() {
     };
 }();
 
+var tabela_ctt = function() {
+    var kt_ctt = function() {
+        
+        var table = $('#kt_ctt');
+        // begin first table
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/vicosafundacoes/ctt_list/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'forn_ctt_id'},
+                {data: 'forn_ctt_nome'},
+                {data: 'forn_ctt_tel'},
+                {data: 'forn_ctt_email'},
+                {data: 'forn_ctt_ativo'},
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                // {
+                //     targets:[2,3],
+                //     type:"date-eu",
+                //     render:function(data)
+                //     {
+                //         return data ? moment(data).format('DD/MM/YYYY') : '';
+                //     },
+                // },
+                {
+                    targets: [4], // índice da coluna 'ativo'
+                    render: function ( data, type, row ) {
+                        if (data) {
+                            return '<i class="fa fa-check-circle text-success"></i>'; // ícone verde para true
+                        } else {
+                            return '<i class="fa fa-times-circle text-danger"></i>'; // ícone vermelho para false
+                        }
+                    }
+                }, 
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ctt_edt(' + row.forn_ctt_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ctt_del(' + row.forn_ctt_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ctt();
+        },
+    };
+}();
 
 
 jQuery(document).ready(function() {
@@ -121,11 +226,18 @@ jQuery(document).ready(function() {
 function abrir_modal_forn(){
     $('#forn_btn_salvar').val('insert');
     $('#aba_cont').hide();
+    $('#forn_nome').val('');
+    $('#forn_cnpj').val('');
+    $('#forn_ies').val('');
     $('#frm_forn_modal').modal('show');
 }
 
 function abrir_modal_ctt(){
     $('#ctt_btn_salvar').val('insert');
+    $('#forn_ctt_nome').val('');
+    $('#forn_ctt_tel').val('');
+    $('#forn_ctt_email').val('');
+    $('#forn_ctt_ativo').prop('checked', false);
     $('#frm_ctt_modal').modal('show');
 }
 
@@ -190,6 +302,7 @@ function forn_edt(forn_id){
         // KTDatatablesDataSourceProdutoArquivo.init();
         $('[href="#kt_tab_pane_1"]').tab('show');
         $('#frm_forn_modal').modal('show');
+        tabela_ctt.init()
     })
     .fail(function (jqxhr, settings, ex) {
         exibeDialogo(result.responseText, tipoAviso.ERRO);
@@ -257,6 +370,7 @@ function ctt_add(){
     }
 
     var frm_ctt = new FormData(document.getElementById('frm_ctt'));
+        frm_ctt.append('forn_id',$('#forn_id').val())
 
     $.ajax({
         method: 'POST',
@@ -300,10 +414,10 @@ function ctt_edt(forn_ctt_id){
     ).done(function (item) {
         $('#forn_ctt_id').val(item.forn_ctt_id);
         $('#forn_ctt_nome').val(item.forn_ctt_nome);
-        $('#forn_ctt_num').val(item.forn_ctt_num);
+        $('#forn_ctt_tel').val(item.forn_ctt_tel);
+        $('#forn_ctt_email').val(item.forn_ctt_email);
         $('#forn_ctt_ativo').val(item.forn_ctt_ativo);
         $('#ctt_btn_salvar').val('update');
-        // KTDatatablesDataSourceProdutoArquivo.init();
         $('#frm_ctt_modal').modal('show');
     })
     .fail(function (jqxhr, settings, ex) {
