@@ -48,5 +48,7 @@ urlpatterns = [
     path('pesq_status/',pesq_status, name='pesq_status'),
     path('pesq_produto/',pesq_produto, name='pesq_produto'),
     path('pesq_tipo/',pesq_tipo, name='pesq_tipo'),
+    path('pesq_cat_aval/',pesq_cat_aval, name='pesq_cat_aval'),
+    path('pesq_pessoa/',pesq_pessoa, name='pesq_pessoa')
 
 ]

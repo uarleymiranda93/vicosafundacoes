@@ -21,6 +21,10 @@
                 <tr>
                     <th class="datatable-row datatable-row-even">ID</th>
                     <th class="datatable-row datatable-row-even">Fornecedor</th>
+                    <th class="datatable-row datatable-row-even">Tipo</th>
+                    <th class="datatable-row datatable-row-even">Impacto</th>
+                    <th class="datatable-row datatable-row-even">Produto/Serviço</th>
+                    <th class="datatable-row datatable-row-even">Contato</th>
                     <th class="datatable-row datatable-row-even">Cnpj</th>
                     <th class="datatable-row datatable-row-even">Inscrição Municipal / Estadual</th>
                     <th class="datatable-row datatable-row-even">Ações</th>
@@ -49,10 +53,7 @@
                         <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Contato</a>
                     </li> 
                     <li class="nav-item">
-                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Avaliação</a>
-                    </li> 
-                    <li class="nav-item">
-                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Monitoramento</a>
+                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_3">Avaliação</a>
                     </li> 
                 </ul>
                 <div class="tab-content mt-5" id="myTabContent">
@@ -87,6 +88,12 @@
                                     <select class="form-control " id="cat_imp" name="cat_imp"></select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <label for="forn_desc">Descrição</label>
+                                    <textarea class="form-control" id="forn_desc" name="forn_desc" rows="3"></textarea>
+                                </div>
+                            </div>
                         </form>
                     </div>                  
                     <div class="tab-pane fade "  id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
@@ -94,6 +101,44 @@
                             <i class="flaticon2-add"></i>
                         </button>
                         <table class="table table-head-custom" id="kt_ctt">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Contato</th>
+                                    <th class="datatable-row datatable-row-even">Telefone</th>
+                                    <th class="datatable-row datatable-row-even">E-mail</th>
+                                    <th class="datatable-row datatable-row-even">Ativo</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade "  id="kt_tab_pane_3" role="tabpanel" aria-labelledby="kt_tab_pane_3">
+                        <button onclick="abrir_modal_aval()" class="btn btn-outline btn-lg" >
+                            <i class="flaticon2-add"></i>
+                        </button>
+                        <table class="table table-head-custom" id="kt_aval">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Tipo de Avaliação</th>
+                                    <th class="datatable-row datatable-row-even">Data</th>
+                                    <th class="datatable-row datatable-row-even">Responsável</th>
+                                    <th class="datatable-row datatable-row-even">Evidência</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade "  id="kt_tab_pane_4" role="tabpanel" aria-labelledby="kt_tab_pane_4">
+                        <button onclick="abrir_modal_monit()" class="btn btn-outline btn-lg" >
+                            <i class="flaticon2-add"></i>
+                        </button>
+                        <table class="table table-head-custom" id="kt_monit">
                             <thead>
                                 <tr>
                                     <th class="datatable-row datatable-row-even">ID</th>
@@ -150,6 +195,50 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
                             <button onclick="ctt_add()"type="button" id="ctt_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                        </div>
+                    </form> 
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_aval_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Aprovação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <div class="tab-content" id="myTabContent">
+                    <form method="post" id="frm_aval">
+                        {% csrf_token %}
+                        <input type="hidden" id="forn_aval_id" name="forn_aval_id">
+                        <div class="row">
+                            <div class="form-group col-lg-4">
+                                <label class="font-weight-bold"for="cat_aval">Tipo Avaliação</label>
+                                <select class="form-control " id="cat_aval" name="cat_aval"></select>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label class="font-weight-bold "for="forn_aval_dta"> Data</label>
+                                <input type="date" class="form-control " id="forn_aval_dta" name="forn_aval_dta" placeholder="Data" required/>
+                            </div>
+                            <div class="form-group col-lg-4">
+                                <label class="font-weight-bold"for="pes">Responsável</label>
+                                <select class="form-control " id="pes" name="pes"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label for="forn_aval_evid">Evidência</label>
+                                <textarea class="form-control" id="forn_aval_evid" name="forn_aval_evid" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                            <button onclick="aval_add()"type="button" id="aval_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
                         </div>
                     </form> 
                 </div>

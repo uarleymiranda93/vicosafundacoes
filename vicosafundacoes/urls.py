@@ -19,4 +19,12 @@ urlpatterns = [
     path('ctt_add/', ctt_add, name='ctt_add'),
     path('ctt_edt/', ctt_edt, name='ctt_edt'),
     path('ctt_del/', ctt_del, name='ctt_del'),
+
+    #fornecedor avaliaçâo
+    path('aval_list/', aval_list, name='aval_list'),
+    path('aval_atb/', aval_atb, name='aval_atb'),
+    path('aval_add/', aval_add, name='aval_add'),
+    path('aval_edt/', aval_edt, name='aval_edt'),
+    path('aval_del/', aval_del, name='aval_del'),
+
 ]

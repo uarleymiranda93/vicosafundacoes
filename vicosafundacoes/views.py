@@ -5,6 +5,10 @@ from django.http import HttpResponse, JsonResponse
 from .models import *
 from categorias.models import *
 from vicosafundacoes.serializador import *
+from datetime import datetime
+from django.utils.dateparse import parse_date
+from django.http import JsonResponse
+from django.db import DatabaseError
 
 # Create your views here.
 
@@ -44,8 +48,9 @@ def forn_add(request):
         forn.forn_nome = request.POST['forn_nome']
         forn.forn_cnpj = request.POST['forn_cnpj']
         forn.forn_ies = request.POST['forn_ies']
-        forn.cat_imp = CategoriaImpacto(cat_imp = request.POST['cat_imp'])
-        forn.cat_tip = CategoriaTipo(cat_tip = request.POST['cat_tip'])
+        forn.forn_desc=request.POST['forn_desc']
+        forn.cat_imp = CategoriaImpacto(cat_imp_id = request.POST['cat_imp'])
+        forn.cat_tip = CategoriaTipo(cat_tip_id = request.POST['cat_tip'])
         forn.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -62,13 +67,16 @@ def forn_add(request):
 
 def forn_edt(request):
     try:
-        item=Fornecedor.objects.get(pk=request.POST['forn_id'])
+        forn=Fornecedor.objects.get(pk=request.POST['forn_id'])
         if request.method=="POST":
-            item.forn_id=request.POST['forn_id']
-            item.forn_nome=request.POST['forn_nome']
-            item.forn_cnpj=request.POST['forn_cnpj']
-            item.forn_ies=request.POST['forn_ies']
-            item.save()
+            forn.forn_id=request.POST['forn_id']
+            forn.forn_nome=request.POST['forn_nome']
+            forn.forn_cnpj=request.POST['forn_cnpj']
+            forn.forn_ies=request.POST['forn_ies']
+            forn.forn_desc=request.POST['forn_desc']
+            forn.cat_imp = CategoriaImpacto(cat_imp_id = request.POST['cat_imp'])
+            forn.cat_tip = CategoriaTipo(cat_tip_id = request.POST['cat_tip'])
+            forn.save()
     except(Exception,DatabaseError) as error:
         print(error)
         return JsonResponse({
@@ -104,7 +112,7 @@ def forn_del(request):
 ##############################################################################################
 def ctt_list(request):
     try:
-        dados= FornecedorContatoSerializer(FornecedorContato.objects.all().order_by('forn_ctt_nome'), many=True)
+        dados= FornecedorContatoSerializer(FornecedorContato.objects.filter(forn=request.POST['forn_id']).order_by('forn_ctt_nome'), many=True)
     except(Exception,DatabaseError) as error:
         print(error)
         return JsonResponse({
@@ -130,7 +138,6 @@ def ctt_atb(request):
  
 def ctt_add(request):
     try:
-        print(request.POST['forn_id'])
         forn = FornecedorContato()
         forn.forn_ctt_nome = request.POST['forn_ctt_nome']
         forn.forn_ctt_tel = request.POST['forn_ctt_tel']
@@ -161,6 +168,8 @@ def ctt_edt(request):
             item.forn_ctt_email=request.POST['forn_ctt_email']
             if 'forn_ctt_ativo' in request.POST:
                 item.forn_ctt_ativo=True
+            else:
+                item.forn_ctt_ativo=False
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -179,6 +188,131 @@ def ctt_del(request):
     try:
         if request.method=="POST":
             item=FornecedorContato.objects.get(pk=request.POST['forn_ctt_id'])
+            item.delete()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar o Produto, '},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'},
+            status=200) 
+        
+
+##############################################################################################
+#                               Fornecedor avaliaçao                                           #
+##############################################################################################
+def aval_list(request):
+    try:
+        print(request.POST['forn_id'])
+        dados= FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.filter(forn=request.POST['forn_id']).order_by('forn_aval_id'), many=True)
+        print(dados)
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error,
+            'aviso': 'Problema ao consultar os dados'},
+            status=500)
+    else:
+        return JsonResponse({'dados':dados.data})
+
+
+def aval_atb(request):
+    try:
+        item = FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.get(pk=request.GET['forn_aval_id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+    
+ 
+# def aval_add(request):
+    print('aquiiiiii')
+#     try:
+#         forn = FornecedorAvaliacao()
+#         forn.cat_aval = CategoriaAvaliacao(cat_aval_id = request.POST['cat_aval'])
+#         forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
+#         forn.pes = CategoriaPessoa(pes_id = request.POST['pes'])
+#         forn.forn = Fornecedor(forn_id=request.POST['forn_id'])
+#         forn.forn_aval_evid = request.POST['forn_aval_evid']
+#         forn.save()
+#     except(Exception,DatabaseError) as error:
+#         print(error)
+#         return JsonResponse({
+#             'error': str(error),
+#             'aviso': 'Erro ao adicionar o Produto'},
+#             status=500)
+#     else:
+#         return JsonResponse({
+#             'item': None,
+#             'aviso': 'Adicionado com sucesso!'},
+#             status=200)
+    
+
+def aval_add(request):
+    try:
+        print('aquiiiii')
+        forn = FornecedorAvaliacao()
+        
+        # Convertendo a data para datetime.datetime
+        forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
+        
+        # Definindo as chaves estrangeiras diretamente
+        forn.cat_aval_id = request.POST['cat_aval']
+        forn.pes_id = request.POST['pes']
+        forn.forn_id = request.POST['forn_id']
+        
+        forn.forn_aval_evid = request.POST['forn_aval_evid']
+        
+        forn.save()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar o Produto'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'
+        }, status=200)
+
+
+def aval_edt(request):
+    try:
+        print(request.POST['cat_aval'])
+        forn=FornecedorAvaliacao.objects.get(pk=request.POST['forn_aval_id'])
+        if request.method=="POST":
+            forn.cat_aval_id = request.POST['cat_aval']
+            forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
+            forn.pes_id = request.POST['pes']
+            forn.forn_id = request.POST['forn_id']
+            forn.forn_aval_evid = request.POST['forn_aval_evid']
+            forn.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar o Produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+
+
+def aval_del(request):
+    try:
+        if request.method=="POST":
+            item=FornecedorAvaliacao.objects.get(pk=request.POST['forn_aval_id'])
             item.delete()
     except(Exception,DatabaseError) as error:
         print(error)

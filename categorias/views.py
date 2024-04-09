@@ -503,4 +503,35 @@ def pesq_produto(request):
     else:
         return JsonResponse(dados.data, safe=False)
     
+
+def pesq_cat_aval(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.filter(nome__icontains=request.GET['term']).order_by('cat_aval_nome'), many=True)
+        else:
+            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.all().order_by('cat_aval_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+
+
+def pesq_pessoa(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.filter(nome__icontains=request.GET['term']).order_by('pes_nome'), many=True)
+        else:
+            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
     
