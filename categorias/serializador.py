@@ -41,3 +41,10 @@ class CategoriaAvaliacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoriaAvaliacao
         fields = '__all__'  
+
+
+class CategoriaAvaliacaoItemSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaAvaliacaoItem
+        fields = '__all__'  

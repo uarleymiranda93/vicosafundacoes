@@ -86,4 +86,19 @@ class CategoriaAvaliacao(models.Model):
     class Meta:
         managed = False
         db_table = 'categoriaavaliacao'
+
+
+class CategoriaAvaliacaoItem(models.Model):
+    cat_aval_item_id = models.BigAutoField(primary_key=True)
+    cat_aval_item_nome = models.CharField(max_length=255)
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_cad_aval_item')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_alt_aval_item')
+    
+    
+    class Meta:
+        managed = False
+        db_table = 'categoriaavaliacaoitem'
+
         

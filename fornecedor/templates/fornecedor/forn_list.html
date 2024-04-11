@@ -14,8 +14,8 @@
       </div>
     </div> -->
     <div class="card-body">
-        <button onclick="abrir_modal_forn()" class="btn btn-outline btn-lg" >
-            <i class="flaticon2-add"></i>
+        <button onclick="abrir_modal_forn()" class="btn btn-light-primary btn-icon btn-circle">
+            <i class="flaticon2-add-1"></i>
         </button>
         <table class="table table-head-custom" id="kt_forn">
             <thead>
@@ -54,7 +54,7 @@
                         <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Contato</a>
                     </li> 
                     <li class="nav-item">
-                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_3">Avaliação</a>
+                        <a id="aba_aval"class="nav-link" data-toggle="tab" href="#kt_tab_pane_3">Avaliação</a>
                     </li> 
                 </ul>
                 <div class="tab-content mt-5" id="myTabContent">
@@ -98,8 +98,8 @@
                         </form>
                     </div>                  
                     <div class="tab-pane fade "  id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
-                        <button onclick="abrir_modal_ctt()" class="btn btn-outline btn-lg" >
-                            <i class="flaticon2-add"></i>
+                        <button onclick="abrir_modal_ctt()" class="btn btn-light-primary btn-icon btn-circle">
+                            <i class="flaticon2-add-1"></i>
                         </button>
                         <table class="table table-head-custom" id="kt_ctt">
                             <thead>
@@ -117,8 +117,8 @@
                         </table> 
                     </div>
                     <div class="tab-pane fade "  id="kt_tab_pane_3" role="tabpanel" aria-labelledby="kt_tab_pane_3">
-                        <button onclick="abrir_modal_aval()" class="btn btn-outline btn-lg" >
-                            <i class="flaticon2-add"></i>
+                        <button onclick="abrir_modal_aval()" class="btn btn-light-primary btn-icon btn-circle">
+                            <i class="flaticon2-add-1"></i>
                         </button>
                         <table class="table table-head-custom" id="kt_aval">
                             <thead>
@@ -135,7 +135,7 @@
                             </tbody>
                         </table> 
                     </div>
-                    <div class="tab-pane fade "  id="kt_tab_pane_4" role="tabpanel" aria-labelledby="kt_tab_pane_4">
+                    <!-- <div class="tab-pane fade "  id="kt_tab_pane_4" role="tabpanel" aria-labelledby="kt_tab_pane_4">
                         <button onclick="abrir_modal_monit()" class="btn btn-outline btn-lg" >
                             <i class="flaticon2-add"></i>
                         </button>
@@ -153,7 +153,7 @@
                             <tbody>
                             </tbody>
                         </table> 
-                    </div>
+                    </div> -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
                         <button onclick="forn_add()"type="button" id="forn_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
@@ -213,35 +213,65 @@
                 </button>
             </div>
             <div class="modal-body" data-scroll="true" >
-                <div class="tab-content" id="myTabContent">
-                    <form method="post" id="frm_aval">
-                        {% csrf_token %}
-                        <input type="hidden" id="forn_aval_id" name="forn_aval_id">
-                        <div class="row">
-                            <div class="form-group col-lg-4">
-                                <label class="font-weight-bold"for="cat_aval">Tipo Avaliação</label>
-                                <select class="form-control " id="cat_aval" name="cat_aval"></select>
+                <ul class="nav nav-tabs nav-tabs-line">
+                    <li class="nav-item">
+                        <a id="prod_aba1" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_4">Aprovação</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_cont"class="nav-link" data-toggle="tab" href="#kt_tab_pane_5">Itens</a>
+                    </li> 
+                </ul>
+                <div class="tab-content mt-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="kt_tab_pane_4" role="tabpanel" arial-labelledby="kt_tab_pane_4">   
+                        <form method="post" id="frm_aval">
+                            {% csrf_token %}
+                            <input type="hidden" id="forn_aval_id" name="forn_aval_id">
+                            <div class="row">
+                                <div class="form-group col-lg-4">
+                                    <label class="font-weight-bold"for="cat_aval">Tipo Avaliação</label>
+                                    <select class="form-control " id="cat_aval" name="cat_aval"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="font-weight-bold "for="forn_aval_dta"> Data</label>
+                                    <input type="date" class="form-control " id="forn_aval_dta" name="forn_aval_dta" placeholder="Data" required/>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="font-weight-bold"for="pes">Responsável</label>
+                                    <select class="form-control " id="pes" name="pes"></select>
+                                </div>
                             </div>
-                            <div class="form-group col-lg-4">
-                                <label class="font-weight-bold "for="forn_aval_dta"> Data</label>
-                                <input type="date" class="form-control " id="forn_aval_dta" name="forn_aval_dta" placeholder="Data" required/>
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <label for="forn_aval_evid">Evidência</label>
+                                    <textarea class="form-control" id="forn_aval_evid" name="forn_aval_evid" rows="3"></textarea>
+                                </div>
                             </div>
-                            <div class="form-group col-lg-4">
-                                <label class="font-weight-bold"for="pes">Responsável</label>
-                                <select class="form-control " id="pes" name="pes"></select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-lg-12">
-                                <label for="forn_aval_evid">Evidência</label>
-                                <textarea class="form-control" id="forn_aval_evid" name="forn_aval_evid" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
-                            <button onclick="aval_add()"type="button" id="aval_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
-                        </div>
-                    </form> 
+                        </form>
+                    </div>
+                    <div class="tab-pane fade "  id="kt_tab_pane_5" role="tabpanel" aria-labelledby="kt_tab_pane_5">
+                        <button onclick="abrir_modal_itens()" class="btn btn-light-primary btn-icon btn-circle">
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom" id="kt_itens">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Contato</th>
+                                    <th class="datatable-row datatable-row-even">Telefone</th>
+                                    <th class="datatable-row datatable-row-even">E-mail</th>
+                                    <th class="datatable-row datatable-row-even">Ativo</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                                <button onclick="itens_add()"type="button" id="itens_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                            </div> 
+                    </div>
                 </div>
             </div>                
         </div>

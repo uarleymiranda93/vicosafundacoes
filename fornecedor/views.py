@@ -47,6 +47,8 @@ def forn_atb(request):
  
 def forn_add(request):
     try:
+        cat_aval_item = CategoriaAvaliacaoItem.objects.all()
+        print('itens', cat_aval_item)
         forn = Fornecedor()
         forn.forn_nome = request.POST['forn_nome']
         forn.forn_cnpj = request.POST['forn_cnpj']
@@ -55,6 +57,19 @@ def forn_add(request):
         forn.cat_imp = CategoriaImpacto(cat_imp_id = request.POST['cat_imp'])
         forn.cat_tip = CategoriaTipo(cat_tip_id = request.POST['cat_tip'])
         forn.save()
+
+        forn_aval = FornecedorAvaliacao()
+        forn_aval.forn = Fornecedor(forn_id=forn.forn_id)
+        forn_aval.save()
+
+        for i in cat_aval_item:
+            aval_item = FornecedorAvaliacaoItem()
+            aval_item.cat_aval_item = CategoriaAvaliacaoItem(cat_aval_item_id=i.cat_aval_item_id)
+            aval_item.forn_aval = FornecedorAvaliacao(forn_aval_id=forn_aval.forn_aval_id)
+            aval_item.save()
+            print(i.cat_aval_item_id)
+       
+
     except(Exception,DatabaseError) as error:
         print(error)
         return JsonResponse({
@@ -208,18 +223,22 @@ def ctt_del(request):
 ##############################################################################################
 #                               Fornecedor avaliaçao                                           #
 ##############################################################################################
-def aval_list(request):
-    try:
-        dados= FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.filter(forn=request.POST['forn_id']).order_by('forn_aval_id'), many=True)
-        print(dados)
-    except(Exception,DatabaseError) as error:
-        print(error)
-        return JsonResponse({
-            'error': error,
-            'aviso': 'Problema ao consultar os dados'},
-            status=500)
-    else:
-        return JsonResponse({'dados':dados.data})
+def aval_index(request):
+    return render(request, 'fornecedor/forn_aval_list.html')
+
+
+# def aval_list(request):
+#     try:
+#         dados= FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.filter(forn=request.POST['forn_id']).order_by('forn_aval_id'), many=True)
+#         print(dados)
+#     except(Exception,DatabaseError) as error:
+#         print(error)
+#         return JsonResponse({
+#             'error': error,
+#             'aviso': 'Problema ao consultar os dados'},
+#             status=500)
+#     else:
+#         return JsonResponse({'dados':dados.data})
 
 
 def aval_atb(request):
@@ -303,3 +322,30 @@ def aval_del(request):
             'aviso': 'Excluido com sucesso!'},
             status=200) 
         
+
+def aval_list(request):
+    try:
+        dados= FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.all().order_by('forn_aval_id'), many=True)
+        print(dados)
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error,
+            'aviso': 'Problema ao consultar os dados'},
+            status=500)
+    else:
+        return JsonResponse({'dados':dados.data})
+    
+
+def aval_item_list(request):
+    try:
+        dados= FornecedorAvaliacaoItemSerializer(FornecedorAvaliacaoItem.objects.filter(forn_aval=request.POST['forn_aval_id']).order_by('forn_aval_id'), many=True)
+        print(dados)
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error,
+            'aviso': 'Problema ao consultar os dados'},
+            status=500)
+    else:
+        return JsonResponse({'dados':dados.data})

@@ -354,6 +354,7 @@ jQuery(document).ready(function() {
 function abrir_modal_forn(){
     $('#forn_btn_salvar').val('insert');
     $('#aba_cont').hide();
+    $('#aba_aval').hide();
     $('#frm_forn').trigger ('reset');
     $('#cat_imp').val('').trigger('change'); 
     $('#cat_tip').val('').trigger('change'); 
@@ -374,17 +375,17 @@ function abrir_modal_ctt(){
     $('#frm_ctt_modal').modal('show');
 }
 
-function abrir_modal_aval(){
-    $('#aval_btn_salvar').val('insert');
-    $('#frm_aval').trigger ('reset');
-    $('#cat_aval').val('').trigger('change'); 
-    $('#pes').val('').trigger('change'); 
-    // $('#forn_ava_nome').val('');
-    // $('#forn_ctt_tel').val('');
-    // $('#forn_ctt_email').val('');
-    // $('#forn_ctt_ativo').prop('checked', false);
-    $('#frm_aval_modal').modal('show');
-}
+// function abrir_modal_aval(){
+//     $('#aval_btn_salvar').val('insert');
+//     $('#frm_aval').trigger ('reset');
+//     $('#cat_aval').val('').trigger('change'); 
+//     $('#pes').val('').trigger('change'); 
+//     // $('#forn_ava_nome').val('');
+//     // $('#forn_ctt_tel').val('');
+//     // $('#forn_ctt_email').val('');
+//     // $('#forn_ctt_ativo').prop('checked', false);
+//     $('#frm_aval_modal').modal('show');
+// }
 
 function forn_add(){
     var url
@@ -437,6 +438,7 @@ function forn_edt(forn_id){
         }
     ).done(function (item) {
         $('#aba_cont').show();
+        $('#aba_aval').show();
         $('#forn_id').val(item.forn_id);
         $('#forn_nome').val(item.forn_nome);
         $('#forn_cnpj').val(item.forn_cnpj);
@@ -630,125 +632,125 @@ function ctt_del(forn_ctt_id) {
     });
 };
 
-function aval_add(){
-    var url;
+// function aval_add(){
+//     var url;
 
-    if($('#aval_btn_salvar').val() == 'update'){
-        url = '/fornecedor/aval_edt/'
-    }else{
-        url = '/fornecedor/aval_add/'
-    }
+//     if($('#aval_btn_salvar').val() == 'update'){
+//         url = '/fornecedor/aval_edt/'
+//     }else{
+//         url = '/fornecedor/aval_add/'
+//     }
 
-    var frm_aval = new FormData(document.getElementById('frm_aval'));
-        frm_aval.append('forn_id',$('#forn_id').val())
+//     var frm_aval = new FormData(document.getElementById('frm_aval'));
+//         frm_aval.append('forn_id',$('#forn_id').val())
 
-    $.ajax({
-        method: 'POST',
-        url: url,
-        data: frm_aval,
-        contentType: false,
-        cache: false,
-        processData: false,
-        beforeSend: function() {
-            Swal.fire({
-                title: "Carregando os dados",
-                text: "Aguarde ...",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-                didOpen: function() {            
-                    Swal.showLoading();
-                }
-            })
-        },
-    })
-    .done(function(data,  textStatus, jqXHR){
-        if (jqXHR.status === 200 && jqXHR.readyState === 4){
-            $('#kt_aval').DataTable().ajax.reload();
-            $('#frm_aval_modal').modal('hide');
-            Swal.close();
-        }
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        Swal.close();
-        console.log(jqXHR);
-        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
-    });
-}
+//     $.ajax({
+//         method: 'POST',
+//         url: url,
+//         data: frm_aval,
+//         contentType: false,
+//         cache: false,
+//         processData: false,
+//         beforeSend: function() {
+//             Swal.fire({
+//                 title: "Carregando os dados",
+//                 text: "Aguarde ...",
+//                 allowOutsideClick: false,
+//                 allowEscapeKey: false,
+//                 allowEnterKey: false,
+//                 didOpen: function() {            
+//                     Swal.showLoading();
+//                 }
+//             })
+//         },
+//     })
+//     .done(function(data,  textStatus, jqXHR){
+//         if (jqXHR.status === 200 && jqXHR.readyState === 4){
+//             $('#kt_aval').DataTable().ajax.reload();
+//             $('#frm_aval_modal').modal('hide');
+//             Swal.close();
+//         }
+//     })
+//     .fail(function(jqXHR, textStatus, errorThrown) {
+//         Swal.close();
+//         console.log(jqXHR);
+//         Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+//     });
+// }
 
-function aval_edt(forn_aval_id){
-    $.getJSON('/fornecedor/aval_atb/',
-        {
-            forn_aval_id: forn_aval_id
-        }
-    ).done(function (item) {
-        $('#forn_aval_id').val(item.forn_aval_id);
+// function aval_edt(forn_aval_id){
+//     $.getJSON('/fornecedor/aval_atb/',
+//         {
+//             forn_aval_id: forn_aval_id
+//         }
+//     ).done(function (item) {
+//         $('#forn_aval_id').val(item.forn_aval_id);
 
-        $('#cat_aval').empty();
-            var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
-        $('#cat_aval').append(cat_aval).trigger('change');
+//         $('#cat_aval').empty();
+//             var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
+//         $('#cat_aval').append(cat_aval).trigger('change');
 
-        $('#pes').empty();
-            var pes = new Option(item.pes_nome,item.pes,true,true);
-        $('#pes').append(pes).trigger('change');
+//         $('#pes').empty();
+//             var pes = new Option(item.pes_nome,item.pes,true,true);
+//         $('#pes').append(pes).trigger('change');
 
-        $('#forn_aval_evid').val(item.forn_aval_evid);
-        $('#forn_aval_dta').val(moment(item.forn_aval_dta).format("YYYY-MM-DD"));
-        $('#aval_btn_salvar').val('update');
-        $('#frm_aval_modal').modal('show');
-    })
-    .fail(function (jqxhr, settings, ex) {
-        exibeDialogo(result.responseText, tipoAviso.ERRO);
-    });
-}
+//         $('#forn_aval_evid').val(item.forn_aval_evid);
+//         $('#forn_aval_dta').val(moment(item.forn_aval_dta).format("YYYY-MM-DD"));
+//         $('#aval_btn_salvar').val('update');
+//         $('#frm_aval_modal').modal('show');
+//     })
+//     .fail(function (jqxhr, settings, ex) {
+//         exibeDialogo(result.responseText, tipoAviso.ERRO);
+//     });
+// }
 
-function aval_del(forn_aval_id) {
-    Swal.fire({
-        title: "Deseja executar esta operação?",
-        text: "O registro " + forn_aval_id + " será removido permanentemente.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Ok, desejo remover!",
-        cancelButtonText: "Não, cancelar!",
-        reverseButtons: true
-    }).then(function(result) {
-        if (result.value) {
-            var dados = new FormData();
-                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
-                dados.append("forn_aval_id", forn_aval_id);
+// function aval_del(forn_aval_id) {
+//     Swal.fire({
+//         title: "Deseja executar esta operação?",
+//         text: "O registro " + forn_aval_id + " será removido permanentemente.",
+//         icon: "warning",
+//         showCancelButton: true,
+//         confirmButtonText: "Ok, desejo remover!",
+//         cancelButtonText: "Não, cancelar!",
+//         reverseButtons: true
+//     }).then(function(result) {
+//         if (result.value) {
+//             var dados = new FormData();
+//                 dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+//                 dados.append("forn_aval_id", forn_aval_id);
 
-            $.ajax({
-                method: 'POST',
-                url: '/fornecedor/aval_del/',
-                data:  dados,
-                contentType: false,
-                cache: false,
-                processData: false,
-                beforeSend: function() {
-                    Swal.fire({
-                        title: "Operação em andamento",
-                        text: "Aguarde ...",
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        allowEnterKey: false,
-                        didOpen: function() {            
-                            Swal.showLoading();
-                        }
-                    })
-                },
-            })
-            .done(function(data,  textStatus, jqXHR){
-                console.log(jqXHR);
-                if (jqXHR.status === 200 && jqXHR.readyState === 4){
-                    $('#kt_aval').DataTable().ajax.reload();
-                    $('#frm_aval_modal').modal('hide');
-                    Swal.close();
-                }
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                Swal.close();
-                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
-            });
-        }
-    });
-};
+//             $.ajax({
+//                 method: 'POST',
+//                 url: '/fornecedor/aval_del/',
+//                 data:  dados,
+//                 contentType: false,
+//                 cache: false,
+//                 processData: false,
+//                 beforeSend: function() {
+//                     Swal.fire({
+//                         title: "Operação em andamento",
+//                         text: "Aguarde ...",
+//                         allowOutsideClick: false,
+//                         allowEscapeKey: false,
+//                         allowEnterKey: false,
+//                         didOpen: function() {            
+//                             Swal.showLoading();
+//                         }
+//                     })
+//                 },
+//             })
+//             .done(function(data,  textStatus, jqXHR){
+//                 console.log(jqXHR);
+//                 if (jqXHR.status === 200 && jqXHR.readyState === 4){
+//                     $('#kt_aval').DataTable().ajax.reload();
+//                     $('#frm_aval_modal').modal('hide');
+//                     Swal.close();
+//                 }
+//             })
+//             .fail(function(jqXHR, textStatus, errorThrown) {
+//                 Swal.close();
+//                 Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+//             });
+//         }
+//     });
+// };

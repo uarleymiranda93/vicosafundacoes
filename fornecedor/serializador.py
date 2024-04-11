@@ -38,9 +38,20 @@ class FornecedorAvaliacaoSerializer(serializers.ModelSerializer):
     pes_id = serializers.IntegerField(source="cat_tip.cat_tip_id", read_only="True")
     cat_aval_nome = serializers.CharField(source="cat_aval.cat_aval_nome", read_only="True")
     pes_nome = serializers.CharField(source="pes.pes_nome", read_only="True")
+    forn_nome = serializers.CharField(source="forn.forn_nome", read_only="True")
 
     
     class Meta:
         model = FornecedorAvaliacao
         fields = '__all__'
+
+
+class FornecedorAvaliacaoItemSerializer(serializers.ModelSerializer):
+    cat_aval_item_id = serializers.IntegerField(source="cat_aval_item.cat_aval_item_id", read_only="True")
+    cat_aval_item_nome = serializers.CharField(source="cat_aval_item.cat_aval_item_nome", read_only="True")
+    
+    class Meta:
+        model = FornecedorAvaliacaoItem
+        fields = '__all__'
+        
         

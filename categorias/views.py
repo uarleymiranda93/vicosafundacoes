@@ -443,7 +443,7 @@ def cat_prod_del(request):
 def pesq_impacto(request):
     try:
         if 'term' in request.GET:
-            dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.filter(nome__icontains=request.GET['term']).order_by('cat_imp_nome'), many=True)
+            dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.filter(cat_imp_nome__icontains=request.GET['term']).order_by('cat_imp_nome'), many=True)
         else:
             dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.all().order_by('cat_imp_nome'), many=True)
     except (Exception, DatabaseError) as error:
@@ -474,7 +474,7 @@ def pesq_status(request):
 def pesq_tipo(request):
     try:
         if 'term' in request.GET:
-            dados = CategoriaTipoSerializer(CategoriaTipo.objects.filter(nome__icontains=request.GET['term']).order_by('cat_tip_nome'), many=True)
+            dados = CategoriaTipoSerializer(CategoriaTipo.objects.filter(cat_tip_nome__icontains=request.GET['term']).order_by('cat_tip_nome'), many=True)
         else:
             dados = CategoriaTipoSerializer(CategoriaTipo.objects.all().order_by('cat_tip_nome'), many=True)
     except (Exception, DatabaseError) as error:
@@ -506,7 +506,7 @@ def pesq_produto(request):
 def pesq_cat_aval(request):
     try:
         if 'term' in request.GET:
-            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.filter(nome__icontains=request.GET['term']).order_by('cat_aval_nome'), many=True)
+            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.filter(cat_aval_nome__icontains=request.GET['term']).order_by('cat_aval_nome'), many=True)
         else:
             dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.all().order_by('cat_aval_nome'), many=True)
     except (Exception, DatabaseError) as error:
@@ -522,7 +522,7 @@ def pesq_cat_aval(request):
 def pesq_pessoa(request):
     try:
         if 'term' in request.GET:
-            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.filter(nome__icontains=request.GET['term']).order_by('pes_nome'), many=True)
+            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.filter(pes_nome__icontains=request.GET['term']).order_by('pes_nome'), many=True)
         else:
             dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)
     except (Exception, DatabaseError) as error:

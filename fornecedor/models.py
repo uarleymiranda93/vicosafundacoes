@@ -50,3 +50,19 @@ class FornecedorAvaliacao(models.Model):
     class Meta:
         managed = False
         db_table = 'fornecedoravaliacao'
+
+
+class FornecedorAvaliacaoItem(models.Model):
+    aval_item_id = models.BigAutoField(primary_key=True)
+    aval_item_grau = models.FloatField()
+    aval_item_nota = models.FloatField()
+    forn_aval = models.ForeignKey(FornecedorAvaliacao, on_delete=models.DO_NOTHING, related_name='forn_aval')
+    cat_aval_item = models.ForeignKey(CategoriaAvaliacaoItem, on_delete=models.DO_NOTHING, related_name='cat_aval_item')
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_cad_forn_aval_item')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_alt_forn_aval_item')
+    usu_cad_dta = models.DateTimeField(auto_now_add=True)
+    usu_alt_dta = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'fornecedoravaliacaoitem'

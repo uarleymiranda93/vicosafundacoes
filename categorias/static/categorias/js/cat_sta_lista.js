@@ -43,7 +43,7 @@ var tab_cat_sta = function() {
             paging: false,
             language: {
                 processing:     "Processamento em andamento...",
-                search:         "cat_staquisar:",
+                search:         "Pesquisar:",
                 lengthMenu:     "MENU registros por página",
                 info:           "Mostrando de START até END de TOTAL registros",
                 infoEmpty:      "Mostrando 0 até 0 de 0 registros",
