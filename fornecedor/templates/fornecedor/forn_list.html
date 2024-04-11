@@ -1,8 +1,9 @@
-{% extends "base/base.html" %}
+{% extends "vicosafundacoes/base.html" %}
 {% load static %}
 {% block script %}
-<script src="{% static 'vicosafundacoes/js/forn_list.js' %}"></script> 
+<script src="{% static 'fornecedor/js/forn_list.js' %}"></script> 
 <script src="{% static 'categorias/js/pesq_cat_control.js' %}"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 {% endblock %}
 {% block content %}
 {% csrf_token %}

@@ -10,7 +10,6 @@ from .forms import *
 def cat_pes_index(request):
     return render(request, 'categoria pessoa/pes_index.html')
 
-
 def cat_pes_lista(request):
     try:
         dados= CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)

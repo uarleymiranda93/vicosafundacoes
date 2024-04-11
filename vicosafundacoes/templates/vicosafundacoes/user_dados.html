@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <base href="">
+    <meta charset="utf-8" />
+    <meta name="description" content="Updates and statistics" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="canonical" href="https://keenthemes.com/metronic" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/js/viewerjs/viewer.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'assets/css/pages/users/login-3.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="{% static 'assets/media/logos/vf.png' %}" />
+    {% block style %}
+    {% endblock %}
+    <script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>
+    <script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#0BB783", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#D7F9EF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };</script>
+    <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/scripts.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/pages/widgets.js' %}"></script>
+    <script src="{% static 'assets/js/funcoes.js' %}"></script>
+    <script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
+    <script src="{% static 'assets/plugins/custom/datatables/datatables.bundle.js' %}"></script>
+    <script src="{% static 'assets/js/viewerjs/viewer.js' %}"></script>
+    {% block script %}
+    <script src="{% static 'js/user_dados.js'%}"></script>
+    {% endblock %}
+    <title>Viçosa Fundações</title>
+</head>
+<body>
+    <div class="flex-row-fluid ml-lg-8">
+        <!--begin::Card-->
+        <div class="card card-custom card-stretch">
+            <!--begin::Header-->
+            <div class="card-header py-3">
+                <div class="card-title align-items-start flex-column">
+                    <h3 class="card-label font-weight-bolder text-dark">Informações Pessoais</h3>
+                    <span class="text-muted font-weight-bold font-size-sm mt-1">Editar Informações Pessoais</span>
+                </div>
+                <div class="card-toolbar">
+                    <button type="button" id="pes_edt" onclick="pes_edt('{{ pes_id }}')" value="update" class="btn btn-warning mr-2">Editar dados </button>
+                    <button type="button" id="pes_btn_salvar" value="add" onclick="pes_add()" class="btn btn-success mr-2">Salvar alterações</button>
+                    <a href="{% url 'vicosafundacoes:index' %}" class="btn btn-secondary">Cancelar</a>
+
+                </div>
+            </div>
+            <!--end::Header-->
+            <!--begin::Form-->
+            <form method="post" id="frm_pes">
+                {% csrf_token %}
+                <div class="row">
+                    <input type="hidden" id="pes_id" name="pes_id">
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <label class="col-xl-3"></label>
+                        <div class="col-lg-9 col-xl-6">
+                            <h5 class="font-weight-bold mb-6">Informações do Usuário</h5>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label text-right" for="pes_nome" >Primeiro Nome</label>
+                        <div class="col-lg-9 col-xl-6">
+                            <input class="form-control form-control-lg form-control-solid" id="pes_nome" name="pes_nome" type="text" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label text-right" for="pes_doc">CPF/CNPJ</label>
+                        <div class="col-lg-9 col-xl-6">
+                            <input class="form-control form-control-lg form-control-solid" type="text" id="pes_doc" name="pes_doc" />
+                            <span class="form-text text-muted">Opcional</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xl-3"></label>
+                        <div class="col-lg-9 col-xl-6">
+                            <h5 class="font-weight-bold mt-10 mb-6">Informações de contato</h5>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label text-right"for="pes_ctt">Telefone de Contato</label>
+                        <div class="col-lg-9 col-xl-6">
+                            <div class="input-group input-group-lg input-group-solid">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="la la-phone"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control form-control-lg form-control-solid" id="pes_ctt" name="pes_ctt" placeholder="Telefone" />
+                            </div>
+                            <span class="form-text text-muted"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label text-right" for="pes_email">Endereço de Email</label>
+                        <div class="col-lg-9 col-xl-6">
+                            <div class="input-group input-group-lg input-group-solid">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="la la-at"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control form-control-lg form-control-solid" id="pes_email" name="pes_email" placeholder="Email" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Body-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+    <!--end::Card-->
+    <!--end::Content-->
+</div>
+<!--end::Profile Personal Information-->
+</div>
+<!--end::Container-->
+</div>
+<!--end::Entry-->
+</div>
+<div id="content" class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+<!--begin::Footer-->
+<div class="footer bg-primary py-4 d-flex flex-lg-column fixed-bottom" style="box-shadow: 0 -5px 5px ##00008B;" id="kt_footer">
+    <!--begin::Container-->
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
+        <!--begin::Copyright-->
+        <div class="text-dark order-2 order-md-1">
+            <span class="text-center font-weight-bold mr-2">{% now 'Y' %}©</span>
+            wminovasolucoes@gmail.com
+        </div>
+        <!--end::Copyright-->

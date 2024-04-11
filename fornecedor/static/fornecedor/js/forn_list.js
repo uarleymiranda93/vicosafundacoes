@@ -58,7 +58,7 @@ var tabela_forn = function() {
                 }
             },
             ajax: {
-                url: '/vicosafundacoes/forn_list/',
+                url: '/fornecedor/forn_list/',
                 type: 'POST',
                 dataSrc: 'dados',
                 data: function(d) {
@@ -173,7 +173,7 @@ var tabela_ctt = function() {
                 }
             },
             ajax: {
-                url: '/vicosafundacoes/ctt_list/',
+                url: '/fornecedor/ctt_list/',
                 type: 'POST',
                 dataSrc: 'dados',
                 data: function(d) {
@@ -285,7 +285,7 @@ var tabela_aval = function() {
                 }
             },
             ajax: {
-                url: '/vicosafundacoes/aval_list/',
+                url: '/fornecedor/aval_list/',
                 type: 'POST',
                 dataSrc: 'dados',
                 data: function(d) {
@@ -346,12 +346,18 @@ jQuery(document).ready(function() {
     pesq_tipo('#cat_tip')
     pesq_cat_aval('#cat_aval')
     pesq_pessoa('#pes')
-    
+
+    $('#forn_cnpj').mask('00.000.000/0000-00', {reverse: true});
+    $('#forn_ctt_tel').mask('(00) 00000-0000');
 });
 
 function abrir_modal_forn(){
     $('#forn_btn_salvar').val('insert');
     $('#aba_cont').hide();
+    $('#frm_forn').trigger ('reset');
+    $('#cat_imp').val('').trigger('change'); 
+    $('#cat_tip').val('').trigger('change'); 
+    $('#pes').val('').trigger('change'); 
     $('#forn_nome').val('');
     $('#forn_cnpj').val('');
     $('#forn_ies').val('');
@@ -360,6 +366,7 @@ function abrir_modal_forn(){
 
 function abrir_modal_ctt(){
     $('#ctt_btn_salvar').val('insert');
+    $('#frm_ctt').trigger ('reset');
     $('#forn_ctt_nome').val('');
     $('#forn_ctt_tel').val('');
     $('#forn_ctt_email').val('');
@@ -369,6 +376,9 @@ function abrir_modal_ctt(){
 
 function abrir_modal_aval(){
     $('#aval_btn_salvar').val('insert');
+    $('#frm_aval').trigger ('reset');
+    $('#cat_aval').val('').trigger('change'); 
+    $('#pes').val('').trigger('change'); 
     // $('#forn_ava_nome').val('');
     // $('#forn_ctt_tel').val('');
     // $('#forn_ctt_email').val('');
@@ -379,9 +389,9 @@ function abrir_modal_aval(){
 function forn_add(){
     var url
     if($('#forn_btn_salvar').val() == 'update'){
-        url = '/vicosafundacoes/forn_edt/'
+        url = '/fornecedor/forn_edt/'
     }else{
-        url = '/vicosafundacoes/forn_add/'
+        url = '/fornecedor/forn_add/'
     }
 
     var frm_forn = new FormData(document.getElementById('frm_forn'));
@@ -421,7 +431,7 @@ function forn_add(){
 }
 
 function forn_edt(forn_id){
-    $.getJSON('/vicosafundacoes/forn_atb/',
+    $.getJSON('/fornecedor/forn_atb/',
         {
             forn_id: forn_id
         }
@@ -470,7 +480,7 @@ function forn_del(forn_id) {
 
             $.ajax({
                 method: 'POST',
-                url: '/vicosafundacoes/forn_del/',
+                url: '/fornecedor/forn_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,
@@ -508,9 +518,9 @@ function ctt_add(){
     var url;
 
     if($('#ctt_btn_salvar').val() == 'update'){
-        url = '/vicosafundacoes/ctt_edt/'
+        url = '/fornecedor/ctt_edt/'
     }else{
-        url = '/vicosafundacoes/ctt_add/'
+        url = '/fornecedor/ctt_add/'
     }
 
     var frm_ctt = new FormData(document.getElementById('frm_ctt'));
@@ -551,7 +561,7 @@ function ctt_add(){
 }
 
 function ctt_edt(forn_ctt_id){
-    $.getJSON('/vicosafundacoes/ctt_atb/',
+    $.getJSON('/fornecedor/ctt_atb/',
         {
             forn_ctt_id: forn_ctt_id
         }
@@ -586,7 +596,7 @@ function ctt_del(forn_ctt_id) {
 
             $.ajax({
                 method: 'POST',
-                url: '/vicosafundacoes/ctt_del/',
+                url: '/fornecedor/ctt_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,
@@ -624,9 +634,9 @@ function aval_add(){
     var url;
 
     if($('#aval_btn_salvar').val() == 'update'){
-        url = '/vicosafundacoes/aval_edt/'
+        url = '/fornecedor/aval_edt/'
     }else{
-        url = '/vicosafundacoes/aval_add/'
+        url = '/fornecedor/aval_add/'
     }
 
     var frm_aval = new FormData(document.getElementById('frm_aval'));
@@ -667,20 +677,19 @@ function aval_add(){
 }
 
 function aval_edt(forn_aval_id){
-    $.getJSON('/vicosafundacoes/aval_atb/',
+    $.getJSON('/fornecedor/aval_atb/',
         {
             forn_aval_id: forn_aval_id
         }
     ).done(function (item) {
-        console.log(item)
         $('#forn_aval_id').val(item.forn_aval_id);
 
         $('#cat_aval').empty();
-            var cat_aval = new Option(item.cat_aval_nome,item.cat_aval_id,true,true);
+            var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
         $('#cat_aval').append(cat_aval).trigger('change');
 
         $('#pes').empty();
-            var pes = new Option(item.pes_nome,item.pes_id,true,true);
+            var pes = new Option(item.pes_nome,item.pes,true,true);
         $('#pes').append(pes).trigger('change');
 
         $('#forn_aval_evid').val(item.forn_aval_evid);
@@ -710,7 +719,7 @@ function aval_del(forn_aval_id) {
 
             $.ajax({
                 method: 'POST',
-                url: '/vicosafundacoes/aval_del/',
+                url: '/fornecedor/aval_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,

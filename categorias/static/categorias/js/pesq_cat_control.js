@@ -211,7 +211,8 @@ function pesq_cat_aval(field){
                             text: item.cat_aval_nome,
                             id: item.cat_aval_id,
                             value: item.cat_aval_id,
-                            value : item.cat_aval_cor,
+                            cat_aval_id : item.cat_aval_id,
+                            cat_aval_nome : item.cat_aval_nome,
                         }
                     })
                 };
@@ -256,7 +257,9 @@ function pesq_pessoa(field){
                             text: item.pes_nome,
                             id: item.pes_id,
                             value: item.pes_id,
-                            value : item.pes_ativo,
+                            pes_id : item.pes_id,
+                            pes_nome : item.pes_nome,
+                            pes_ativo : item.pes_ativo,
                         }
                     })
                 };

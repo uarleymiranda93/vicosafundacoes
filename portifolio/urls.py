@@ -23,4 +23,5 @@ urlpatterns = [
     path('vicosafundacoes/', include('vicosafundacoes.urls')),
     path('base/', include('base.urls')),
     path('categorias/', include('categorias.urls')),
+    path('fornecedor/', include('fornecedor.urls')),
 ]
