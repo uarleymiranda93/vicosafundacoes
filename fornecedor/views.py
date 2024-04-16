@@ -48,7 +48,6 @@ def forn_atb(request):
 def forn_add(request):
     try:
         cat_aval_item = CategoriaAvaliacaoItem.objects.all()
-        print('itens', cat_aval_item)
         forn = Fornecedor()
         forn.forn_nome = request.POST['forn_nome']
         forn.forn_cnpj = request.POST['forn_cnpj']
@@ -62,12 +61,16 @@ def forn_add(request):
         forn_aval.forn = Fornecedor(forn_id=forn.forn_id)
         forn_aval.save()
 
+        forn_monit = FornecedorMonitoramento()
+        forn_monit.forn = Fornecedor(forn_id=forn.forn_id)
+        forn_monit.save()
+
         for i in cat_aval_item:
             aval_item = FornecedorAvaliacaoItem()
             aval_item.cat_aval_item = CategoriaAvaliacaoItem(cat_aval_item_id=i.cat_aval_item_id)
             aval_item.forn_aval = FornecedorAvaliacao(forn_aval_id=forn_aval.forn_aval_id)
             aval_item.save()
-            print(i.cat_aval_item_id)
+        
        
 
     except(Exception,DatabaseError) as error:
@@ -226,21 +229,6 @@ def ctt_del(request):
 def aval_index(request):
     return render(request, 'fornecedor/forn_aval_list.html')
 
-
-# def aval_list(request):
-#     try:
-#         dados= FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.filter(forn=request.POST['forn_id']).order_by('forn_aval_id'), many=True)
-#         print(dados)
-#     except(Exception,DatabaseError) as error:
-#         print(error)
-#         return JsonResponse({
-#             'error': error,
-#             'aviso': 'Problema ao consultar os dados'},
-#             status=500)
-#     else:
-#         return JsonResponse({'dados':dados.data})
-
-
 def aval_atb(request):
     try:
         item = FornecedorAvaliacaoSerializer(FornecedorAvaliacao.objects.get(pk=request.GET['forn_aval_id']))
@@ -254,32 +242,32 @@ def aval_atb(request):
         return JsonResponse(item.data) 
 
 
-def aval_add(request):
-    try:
-        forn = FornecedorAvaliacao()
+# def aval_add(request):
+#     try:
+#         forn = FornecedorAvaliacao()
         
-        # Convertendo a data para datetime.datetime
-        forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
+#         # Convertendo a data para datetime.datetime
+#         forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
         
-        # Definindo as chaves estrangeiras diretamente
-        forn.cat_aval_id = request.POST['cat_aval']
-        forn.pes_id = request.POST['pes']
-        forn.forn_id = request.POST['forn_id']
+#         # Definindo as chaves estrangeiras diretamente
+#         forn.cat_aval_id = request.POST['cat_aval']
+#         forn.pes_id = request.POST['pes']
+#         forn.forn_id = request.POST['forn_id']
         
-        forn.forn_aval_evid = request.POST['forn_aval_evid']
+#         forn.forn_aval_evid = request.POST['forn_aval_evid']
         
-        forn.save()
-    except (Exception, DatabaseError) as error:
-        print(error)
-        return JsonResponse({
-            'error': str(error),
-            'aviso': 'Erro ao adicionar o Produto'
-        }, status=500)
-    else:
-        return JsonResponse({
-            'item': None,
-            'aviso': 'Adicionado com sucesso!'
-        }, status=200)
+#         forn.save()
+#     except (Exception, DatabaseError) as error:
+#         print(error)
+#         return JsonResponse({
+#             'error': str(error),
+#             'aviso': 'Erro ao adicionar o Produto'
+#         }, status=500)
+#     else:
+#         return JsonResponse({
+#             'item': None,
+#             'aviso': 'Adicionado com sucesso!'
+#         }, status=200)
 
 
 def aval_edt(request):
@@ -289,7 +277,7 @@ def aval_edt(request):
             forn.cat_aval_id = request.POST['cat_aval']
             forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
             forn.pes_id = request.POST['pes']
-            forn.forn_id = request.POST['forn_id']
+            forn.forn_id = Fornecedor(forn_id=forn.forn.forn_id)
             forn.forn_aval_evid = request.POST['forn_aval_evid']
             forn.save()
     except(Exception,DatabaseError) as error:
@@ -305,22 +293,22 @@ def aval_edt(request):
             status=200)
 
 
-def aval_del(request):
-    try:
-        if request.method=="POST":
-            item=FornecedorAvaliacao.objects.get(pk=request.POST['forn_aval_id'])
-            item.delete()
-    except(Exception,DatabaseError) as error:
-        print(error)
-        return JsonResponse({
-            'error': str(error),
-            'aviso': 'Erro ao deletar o Produto, '},
-            status=500)
-    else:
-        return JsonResponse({
-            'item': None,
-            'aviso': 'Excluido com sucesso!'},
-            status=200) 
+# def aval_del(request):
+#     try:
+#         if request.method=="POST":
+#             item=FornecedorAvaliacao.objects.get(pk=request.POST['forn_aval_id'])
+#             item.delete()
+#     except(Exception,DatabaseError) as error:
+#         print(error)
+#         return JsonResponse({
+#             'error': str(error),
+#             'aviso': 'Erro ao deletar o Produto, '},
+#             status=500)
+#     else:
+#         return JsonResponse({
+#             'item': None,
+#             'aviso': 'Excluido com sucesso!'},
+#             status=200) 
         
 
 def aval_list(request):
@@ -340,7 +328,6 @@ def aval_list(request):
 def aval_item_list(request):
     try:
         dados= FornecedorAvaliacaoItemSerializer(FornecedorAvaliacaoItem.objects.filter(forn_aval=request.POST['forn_aval_id']).order_by('forn_aval_id'), many=True)
-        print(dados)
     except(Exception,DatabaseError) as error:
         print(error)
         return JsonResponse({
@@ -349,3 +336,33 @@ def aval_item_list(request):
             status=500)
     else:
         return JsonResponse({'dados':dados.data})
+
+
+def item_edt_div(request):
+    try:
+        aval_item_ids = request.POST.getlist('aval_item_id')
+        # Remove strings vazias da lista de IDs
+        aval_item_ids = [id for id in aval_item_ids if id.isdigit()]
+        print('ids chegando',aval_item_ids)
+
+        if request.method == "POST":
+            for aval_item_id in aval_item_ids:
+                # Faça o que você precisa fazer para cada ID
+                forn_item = FornecedorAvaliacaoItem.objects.get(pk=aval_item_id)
+                if 'aval_item_grau' in request.POST:
+                    forn_item.aval_item_grau = request.POST['aval_item_grau']
+                if  'aval_item_nota' in request.POST:
+                    forn_item.aval_item_nota = request.POST['aval_item_nota']
+                forn_item.save()
+                print('após salvar',forn_item)
+            # Aqui você pode retornar uma resposta JSON de sucesso se necessário
+            return JsonResponse({
+                'aviso': 'Editado com sucesso!',
+            }, status=200)
+
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar o Produto'
+        }, status=500)

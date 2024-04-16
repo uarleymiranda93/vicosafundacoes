@@ -72,14 +72,14 @@ var tabela_aval = function() {
                     // d.forn_id = $("#forn_id").val();
                 },
             },
-            order: [[ 0, 'asc' ]],
+            order: [[ 5, 'asc' ]],
             columns: [
-                {data: 'forn_aval_id'},
                 {data: 'forn_nome'},
                 {data: 'cat_aval_nome'},
                 {data: 'forn_aval_dta'},
                 {data: 'pes_nome'},
                 {data: 'forn_aval_evid'},
+                {data: 'forn_aval_id'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
@@ -104,10 +104,6 @@ var tabela_aval = function() {
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
-                            <button type="button" onclick="aval_del(' + row.forn_aval_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
-                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
-                                <i class="flaticon-delete"></i>\
-                            </button>\
                         ';
                     },
                 },
@@ -146,15 +142,12 @@ var tabela_aval_item = function() {
         }).DataTable({
             responsive: true,
             processing: true,
-            pageLength: 10,
             paging: false,
             language: {
+                info: "", 
                 processing:     "Processamento em andamento...",
                 search:         "Pesquisar:",
-                lengthMenu:     "MENU registros por página",
-                info:           "Mostrando de START até END de TOTAL registros",
-                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
-                infoFiltered:   "(Filtrados de MAX registros)",
+                // infoFiltered:   "(Filtrados de MAX registros)",
                 infoPostFix:    "",
                 loadingRecords: "Carregando registros...",
                 zeroRecords:    "Nenhum registro encontrado",
@@ -179,33 +172,58 @@ var tabela_aval_item = function() {
                     d.forn_aval_id = $("#forn_aval_id").val();
                 },
             },
-            order: [[ 0, 'asc' ]],
+            order: [[ 5, 'asc' ]],
             columns: [
-                {data: 'aval_item_id'},
-                {data: 'cat_aval_item_nome'},
-                {data: 'aval_item_grau'},
-                {data: 'aval_item_nota'},
-                {data: null},
-                {data: null, responsivePriority: -1},
+                {data: null, responsivePriority: 0},
+                {data: 'cat_aval_item_nome', responsivePriority: 1},
+                {data: 'aval_item_nota', responsivePriority: 2},
+                {data: 'aval_item_grau', responsivePriority: 3},
+                {data: null, responsivePriority: 4},
+                {data: 'aval_item_id', responsivePriority: 5},
             ],
             columnDefs: [
                 {
-                    targets: [-1],
+                    targets: 0,
                     orderable: false,
+                    className: 'checkble',
                     render: function(data, type, row) {
-                        return '\
-                            <button type="button" onclick="aval_edt(' + row.forn_aval_id + ')" class="btn btn-light-success btn-icon btn-circle"\
-                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
-                                <i class="flaticon-edit"></i>\
-                            </button> \
-                            <button type="button" onclick="aval_del(' + row.forn_aval_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
-                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
-                                <i class="flaticon-delete"></i>\
-                            </button>\
-                        ';
+                        return '<input type="checkbox" class="checkble">';
+                    }
+                },
+                {
+                    targets: 4,
+                    orderable: false,
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        return (parseFloat(row.aval_item_grau * 10)).toFixed(1);
                     },
                 },
+                {
+                    targets: [1, 2, 3, 4, 5], // Especifique as colunas que deseja centralizar
+                    className: 'text-center' // Aplica a classe de estilo CSS
+                },
             ],
+            footerCallback: function(row, data, start, end, display) {
+                var api = this.api();
+                var sum = api
+                    .column(3, { page: 'current' })
+                    .data()
+                    .reduce(function(acc, value) {
+                        var valorNumerico = parseFloat(value); // Converte para número
+                    if (!isNaN(valorNumerico)) { // Verifica se é um número válido
+                        return acc + valorNumerico;
+                    } else {
+                        return acc; // Se não for um número válido, mantém o valor acumulado sem alteração
+                    }
+                }, 0);
+                var indiceAvaliacao = (sum * 10).toFixed(1) + '%';
+                $(api.column(3).footer()).html('Pontuação Total:'+ '<br>Índice de Avaliação: ');
+                $(api.column(4).footer()).html(  (sum * 10).toFixed(1) + '<br>' + indiceAvaliacao);
+            },
+            // Adiciona uma função para criar atributos data-id para cada linha
+            createdRow: function(row, data, dataIndex) {
+                $(row).attr('data-id', data.aval_item_id);
+            }
         });  
     };
 
@@ -217,7 +235,7 @@ var tabela_aval_item = function() {
     };
 }();
 
-function abrir_modal_aval(){
+function edt_aval_div(){
     $('#aval_btn_salvar').val('insert');
     $('#frm_aval').trigger ('reset');
     $('#cat_aval').val('').trigger('change'); 
@@ -229,27 +247,115 @@ function abrir_modal_aval(){
     $('#frm_aval_modal').modal('show');
 }
 
+function abrir_modal_itens() {
+     // Adiciona evento de clique ao checkbox da primeira linha para marcar ou desmarcar todos os checkboxes nas linhas
+     $('#kt_aval_item').on('change', 'input.checkble:first', function() {
+        var isChecked = $(this).prop('checked');
+
+        // Seleciona todos os checkboxes nas linhas
+        $('#kt_aval_item tbody').find('input.checkble').prop('checked', isChecked);
+    });
+
+    // Verifica se nenhum checkbox está marcado
+    var anyChecked = $('#kt_aval_item tbody').find('input.checkble:checked').length > 0;
+    if (!anyChecked) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atenção!',
+            text: 'Por favor, selecione pelo menos um item.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Define o evento de clique para o botão de salvar
+    $('#item_btn_salvar').click(function() {
+        // // Verifica se pelo menos um checkbox está selecionado
+        var checkedRows = $('#kt_aval_item tbody').find('input.checkble:checked').closest('tr'); // Encontra todas as linhas com checkboxes marcados
+        // Array para armazenar os IDs das linhas selecionadas
+        var selectedIds = [];
+
+        // Itera sobre cada linha selecionada para extrair o ID
+        checkedRows.each(function() {
+            var rowId = $(this).data('id');
+            selectedIds.push(rowId);
+        });
+
+        // Chama a função item_edt_div apenas se houver IDs selecionados
+        if (selectedIds.length > 0) {
+            item_edt_div(selectedIds);
+        }
+    });
+    
+    $('#frm_itens_modal').modal('show');
+}
+
 jQuery(document).ready(function() {
     tabela_aval.init()
+    pesq_pessoa('#pes')
+    pesq_cat_aval('#cat_aval')
+
+    var table = $('#kt_aval_item').DataTable();
+    $('#kt_aval_item').on('change', 'input.checkble:first', function() {
+        var isChecked = $(this).prop('checked');
+        // Marca ou desmarca todos os checkboxes nas linhas com base no estado do checkbox "selecionar tudo"
+        $('#kt_aval_item tbody').find('input.checkble').prop('checked', isChecked);
+    });
+
 
 });
 
 
-function aval_add(){
-    var url;
-
-    if($('#aval_btn_salvar').val() == 'update'){
-        url = '/fornecedor/aval_edt/'
-    }else{
-        url = '/fornecedor/aval_add/'
+function item_edt_div(selectedIds) {
+    // Crie um FormData e adicione os IDs selecionados
+    var frm_item = new FormData(document.getElementById('frm_item'));
+    frm_item.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+    for (var i = 0; i < selectedIds.length; i++) {
+        frm_item.append('aval_item_id', selectedIds[i]);
+        frm_item.append('forn_aval_id', $('#forn_aval_id'));
     }
 
+    // Faça a solicitação AJAX para editar os itens no banco de dados
+    $.ajax({
+        method: 'POST',
+        url: '/fornecedor/item_edt_div/',
+        data: frm_item,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data, textStatus, jqXHR) {
+        if (jqXHR.status === 200 && jqXHR.readyState === 4) {
+            $('#kt_aval_item').DataTable().ajax.reload();
+            $('#frm_itens_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function aval_salvar(){
     var frm_aval = new FormData(document.getElementById('frm_aval'));
-        frm_aval.append('forn_id',$('#forn_id').val())
 
     $.ajax({
         method: 'POST',
-        url: url,
+        url: '/fornecedor/aval_edt/',
         data: frm_aval,
         contentType: false,
         cache: false,
@@ -281,22 +387,38 @@ function aval_add(){
     });
 }
 
+
 function aval_edt(forn_aval_id){
     $.getJSON('/fornecedor/aval_atb/',
         {
             forn_aval_id: forn_aval_id
         }
     ).done(function (item) {
+        console.log(item)
         $('#forn_aval_id').val(item.forn_aval_id);
 
-        $('#cat_aval').empty();
-            var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
-        $('#cat_aval').append(cat_aval).trigger('change');
+        $('#forn').empty();
+            var forn = new Option(item.forn_nome,item.forn,true,true);
+        $('#forn').append(forn).trigger('change');
 
-        $('#pes').empty();
-            var pes = new Option(item.pes_nome,item.pes,true,true);
-        $('#pes').append(pes).trigger('change');
-
+        if(item.cat_aval){
+            $('#cat_aval').empty();
+                var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
+            $('#cat_aval').append(cat_aval).trigger('change');
+        }else{
+            var cat_aval = new Option('', '', false, true); // Opção vazia
+            $('#cat_aval').empty().append(pes).trigger('change');
+        }
+        
+        if (item.pes) {
+            $('#pes').empty();
+            var pes = new Option(item.pes_nome, item.pes, true, true);
+            $('#pes').append(pes).trigger('change');
+        } else {
+            var pes = new Option('', '', false, true); // Opção vazia
+            $('#pes').empty().append(pes).trigger('change');
+        }
+        
         $('#forn_aval_evid').val(item.forn_aval_evid);
         $('#forn_aval_dta').val(moment(item.forn_aval_dta).format("YYYY-MM-DD"));
         $('#aval_btn_salvar').val('update');

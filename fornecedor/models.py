@@ -54,8 +54,8 @@ class FornecedorAvaliacao(models.Model):
 
 class FornecedorAvaliacaoItem(models.Model):
     aval_item_id = models.BigAutoField(primary_key=True)
-    aval_item_grau = models.FloatField()
-    aval_item_nota = models.FloatField()
+    aval_item_grau = models.FloatField(blank=True, null=True)
+    aval_item_nota = models.FloatField(blank=True, null=True)
     forn_aval = models.ForeignKey(FornecedorAvaliacao, on_delete=models.DO_NOTHING, related_name='forn_aval')
     cat_aval_item = models.ForeignKey(CategoriaAvaliacaoItem, on_delete=models.DO_NOTHING, related_name='cat_aval_item')
     usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_cad_forn_aval_item')
@@ -66,3 +66,20 @@ class FornecedorAvaliacaoItem(models.Model):
     class Meta:
         managed = False
         db_table = 'fornecedoravaliacaoitem'
+
+
+class FornecedorMonitoramento(models.Model):
+    forn_monit_id = models.BigAutoField(primary_key=True)
+    forn_monit_qld = models.BooleanField()
+    forn_monit_pont = models.BooleanField()
+    forn_monit_val = models.BooleanField()
+    forn_monit_sup = models.BooleanField()
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_cad_forn_monit')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_alt_forn_monit')
+    usu_cad_dta = models.DateTimeField(auto_now_add=True)
+    usu_alt_dta = models.DateTimeField(auto_now=True)
+    forn = models.ForeignKey(Fornecedor, on_delete=models.DO_NOTHING, related_name='forn_monit_forn')
+
+    class Meta:
+        managed = False
+        db_table = 'fornecedormonitoramento'

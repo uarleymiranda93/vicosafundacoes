@@ -23,12 +23,11 @@ urlpatterns = [
     path('avaliacao/', aval_index, name='aval_index'),
     path('aval_list/', aval_list, name='aval_list'),
     path('aval_atb/', aval_atb, name='aval_atb'),
-    path('aval_add/', aval_add, name='aval_add'),
     path('aval_edt/', aval_edt, name='aval_edt'),
-    path('aval_del/', aval_del, name='aval_del'),
-
+    
     #fornecedor avaliação item 
     path('aval_item_list/', aval_item_list, name='aval_item_list'),
+    path('item_edt_div/', item_edt_div, name='item_edt_div'),
     # path('aval_atb/', aval_atb, name='aval_atb'),
     # path('aval_add/', aval_add, name='aval_add'),
     # path('aval_edt/', aval_edt, name='aval_edt'),

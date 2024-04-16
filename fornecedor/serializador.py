@@ -53,5 +53,11 @@ class FornecedorAvaliacaoItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FornecedorAvaliacaoItem
         fields = '__all__'
-        
+
+
+class FornecedorMonitoramentoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = FornecedorMonitoramento
+        fields = '__all__'       
         
