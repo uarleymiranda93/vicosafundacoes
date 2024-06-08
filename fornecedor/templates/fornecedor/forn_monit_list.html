@@ -1,0 +1,113 @@
+{% extends "vicosafundacoes/base.html" %}
+{% load static %}
+{% block script %}
+<script src="{% static 'fornecedor/js/forn_monit_list.js' %}"></script> 
+<script src="{% static 'categorias/js/pesq_cat_control.js' %}"></script> 
+{% endblock %}
+{% block content %}
+{% csrf_token %}
+<div class="card card-custom gutter-b bg-white mt-10">
+    <!-- <div class="card-header">
+      <div class="card-title">
+        <h1 class="display-3 text-success text-center font-weight-bold">Pedido Controle</h1>
+      </div>
+    </div> -->
+    <div class="card-body">
+        <table class="table table-head-custom" id="kt_monit">
+            <thead>
+                <tr>
+                    <th class="datatable-row datatable-row-even">Fornecedor</th>
+                    <th class="datatable-row datatable-row-even">Qualidade dos produtos</th>
+                    <th class="datatable-row datatable-row-even">Pontualidade entrega</th>
+                    <th class="datatable-row datatable-row-even">Preço</th>
+                    <th class="datatable-row datatable-row-even">Suporte Pós Venda</th>
+                    <th class="datatable-row datatable-row-even">Id</th>
+                    <th class="datatable-row datatable-row-even">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table> 
+    </div>
+</div>
+<div class="modal fade" id="frm_monit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Critérios Técnicos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <!-- <div class="tab-content mt-5" id="myTabContent"> -->
+                    <form method="post" id="frm_monit">
+                        {% csrf_token %}
+                        <input type="hidden" id="forn_monit_id" name="forn_monit_id">
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label class="col-form-label">Qualidade dos produtos</label>
+                                <div class="radio-inline">
+                                    <label class="radio">
+                                        <input type="radio" name="qualidade" value="1">OK
+                                        <span></span>
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="qualidade" value="2">NC
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="col-form-label">Pontualidade na entrega</label>
+                                <div class="radio-inline">
+                                    <label class="radio">
+                                        <input type="radio" name="pontualidade" value="3">OK
+                                        <span></span>
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="pontualidade" value="4">NC
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label class="col-form-label">Preço</label>
+                                <div class="radio-inline">
+                                    <label class="radio">
+                                        <input type="radio" name="preco" value="5">OK
+                                        <span></span>
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="preco" value="6">NC
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="col-form-label">Suporte Pós Venda</label>
+                                <div class="radio-inline">
+                                    <label class="radio">
+                                        <input type="radio" name="suport" value="7">OK
+                                        <span></span>
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="suport" value="8">NC
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                            <button onclick="monit_salvar()"type="button" id="monit_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                        </div>
+                    </form> 
+                <!-- </div> -->
+            </div>                
+        </div>
+    </div>
+</div>
+{% endblock %} 

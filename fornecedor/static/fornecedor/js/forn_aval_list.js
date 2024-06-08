@@ -248,14 +248,6 @@ function edt_aval_div(){
 }
 
 function abrir_modal_itens() {
-     // Adiciona evento de clique ao checkbox da primeira linha para marcar ou desmarcar todos os checkboxes nas linhas
-     $('#kt_aval_item').on('change', 'input.checkble:first', function() {
-        var isChecked = $(this).prop('checked');
-
-        // Seleciona todos os checkboxes nas linhas
-        $('#kt_aval_item tbody').find('input.checkble').prop('checked', isChecked);
-    });
-
     // Verifica se nenhum checkbox está marcado
     var anyChecked = $('#kt_aval_item tbody').find('input.checkble:checked').length > 0;
     if (!anyChecked) {
@@ -294,6 +286,10 @@ jQuery(document).ready(function() {
     tabela_aval.init()
     pesq_pessoa('#pes')
     pesq_cat_aval('#cat_aval')
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+        $($.fn.dataTable.tables(true)).DataTable()
+           .columns.adjust();
+     });
 
     var table = $('#kt_aval_item').DataTable();
     $('#kt_aval_item').on('change', 'input.checkble:first', function() {

@@ -1,5 +1,7 @@
 from django.urls import path
 from .views import * 
+from .views import relatorio_aprov
+
 
 app_name = 'fornecedor' #comando responsável por  deixar a app mais inteligente 
 
@@ -28,9 +30,15 @@ urlpatterns = [
     #fornecedor avaliação item 
     path('aval_item_list/', aval_item_list, name='aval_item_list'),
     path('item_edt_div/', item_edt_div, name='item_edt_div'),
-    # path('aval_atb/', aval_atb, name='aval_atb'),
-    # path('aval_add/', aval_add, name='aval_add'),
-    # path('aval_edt/', aval_edt, name='aval_edt'),
-    # path('aval_del/', aval_del, name='aval_del'),
+    
+     #fornecedor monitoramento
+    path('monit/', monit_index, name='monit_index'),
+    path('monit_list/', monit_list, name='monit_list'),
+    path('monit_atb/', monit_atb, name='monit_atb'),
+    path('monit_edt/', monit_edt, name='monit_edt'),
+
+    #relatorio
+     path('relatorio_aprov/', relatorio_aprov, name='relatorio_aprov'),
+
 
 ]

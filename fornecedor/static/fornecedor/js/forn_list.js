@@ -17,20 +17,10 @@ const Toast = Swal.mixin({
 });
 
 var tabela_forn = function() {
+    var selectedIds = []; // Array para armazenar os IDs das linhas selecionadas
+
     var kt_forn = function() {
-        
-        var table = $('#kt_forn');
-        // begin first table
-        table.on('processing.dt', function (e, settings, processing) {
-            if (processing) {
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Sucesso! Carregando os dados ...'
-                });
-            } else {
-                Toast.close();
-            }
-        }).DataTable({
+        var table = $('#kt_forn').DataTable({
             responsive: true,
             processing: true,
             pageLength: 10,
@@ -39,9 +29,9 @@ var tabela_forn = function() {
                 processing:     "Processamento em andamento...",
                 search:         "Pesquisar:",
                 lengthMenu:     "MENU registros por página",
-                info:           "Mostrando de START até END de TOTAL registros",
+                info:           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                 infoEmpty:      "Mostrando 0 até 0 de 0 registros",
-                infoFiltered:   "(Filtrados de MAX registros)",
+                infoFiltered:   "(Filtrados de _MAX_ registros)",
                 infoPostFix:    "",
                 loadingRecords: "Carregando registros...",
                 zeroRecords:    "Nenhum registro encontrado",
@@ -65,9 +55,9 @@ var tabela_forn = function() {
                     d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
                 },
             },
-            order: [[ 0, 'asc' ]],
+            order: [[ 9, 'asc' ]],
             columns: [
-                {data: 'forn_id'},
+                {data: null, responsivePriority: 0},
                 {data: 'forn_nome'},
                 {data: 'cat_tip_nome'},
                 {data: 'cat_imp_nome'},
@@ -75,15 +65,38 @@ var tabela_forn = function() {
                 {data: 'forn_cont'},
                 {data: 'forn_cnpj'},
                 {data: 'forn_ies'},
+                {data: 'forn_nf'},
+                {data: 'forn_id'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
+                {
+                    targets: 0,
+                    orderable: false,
+                    className: 'checkble',
+                    render: function(data, type, row) {
+                        return '<input type="checkbox" class="checkble">';
+                    }
+                },
                 {
                     targets: [3],
                     render: function(data, type, row) {
                         return '\
                             <span class="rounded-lg p-3 font-weight-boldest" style="background-color:'+row.cat_imp_cor +'; color:'+row.cat_imp_nome+'">'+data+'</span>\
                         ';
+                    }
+                },
+                {
+                    targets: [8],
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (data === true) {
+                            return '<span class="text-success">OK</span>';
+                        } else if (data === false) {
+                            return '<span class="text-danger">NC</span>';
+                        } else {
+                            return ''; // Retorna vazio se data for null
+                        }
                     }
                 },
                 {
@@ -99,7 +112,6 @@ var tabela_forn = function() {
                 {
                     targets: [-1],
                     orderable: false,
-                    
                     render: function(data, type, row) {
                         return '\
                             <button type="button" onclick="forn_edt(' + row.forn_id + ')" class="btn btn-light-success btn-icon btn-circle"\
@@ -114,7 +126,94 @@ var tabela_forn = function() {
                     },
                 },
             ],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csvHtml5',
+                    text: 'CSV',
+                    className: 'dropdown-item',
+                    action: function (e, dt, button, config) {
+                        var selectedRowsData = dt.rows({ selected: true }).data(); // Obtém os dados das linhas selecionadas
+                        var selectedIds = selectedRowsData.map(function(row) {
+                            console.log(row.forn_id)
+                            return row.forn_id; // Supondo que cada linha tenha um campo 'id'
+                            
+                        });
+            
+                        $.ajax({
+                            url: '/fornecedor/relatorio_aprov/',
+                            type: 'POST',
+                            data: (function() {
+                                var dados = new FormData();
+                                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                                dados.append("forn_ids", selectedIds);
+                                return dados;
+                            })(),
+                            processData: false, // Não processar os dados como uma string
+                            contentType: false, // Não configurar o tipo de conteúdo
+                            success: function(response) {
+                                // Processamento dos dados de resposta, se necessário
+                                // Em seguida, exporta os dados obtidos para CSV
+                                var data = response.dados; // Supondo que a resposta contém os dados a serem exportados
+                                var csvData = ''; // String para armazenar os dados CSV
+                        
+                                // Aqui você precisa formatar os dados conforme necessário para CSV
+                                // Você pode usar loops ou funções de formatação, dependendo da estrutura dos seus dados
+                        
+                                // Após formatar os dados, você pode criar um blob CSV e iniciará o download
+                                var blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+                                if (navigator.msSaveBlob) { // IE 10+
+                                    navigator.msSaveBlob(blob, 'data.csv');
+                                } else {
+                                    var link = document.createElement("a");
+                                    if (link.download !== undefined) { // feature detection
+                                        var url = URL.createObjectURL(blob);
+                                        link.setAttribute("href", url);
+                                        link.setAttribute("download", 'data.csv');
+                                        link.style.visibility = 'hidden';
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                }
+            ]
         });  
+
+        // Adiciona um evento de mudança para os checkboxes dentro da tabela
+        // table.on('change', 'input[type="checkbox"]', function(){
+        //     var checkbox = $(this);
+        //     var row = checkbox.closest('tr');
+        //     var data = table.row(row).data(); // Modificado para 'table.row(row).data()'
+            
+        //     // Verifica se o checkbox está marcado ou não e adiciona ou remove o ID da linha selecionada do array selectedIds
+        //     if(checkbox.prop('checked')){
+        //         selectedIds.push(data.forn_id);
+        //     } else {
+        //         var index = selectedIds.indexOf(data.forn_id);
+        //         if(index !== -1){
+        //             selectedIds.splice(index, 1);
+        //         }
+        //     }
+        // });
+
+        // begin first table
+        // table.on('processing.dt', function (e, settings, processing) {
+        //     if (processing) {
+        //         Toast.fire({
+        //             icon: 'success',
+        //             title: 'Sucesso! Carregando os dados ...'
+        //         });
+        //     } else {
+        //         Toast.close();
+        //     }
+        // });
     };
 
     return {
@@ -124,6 +223,11 @@ var tabela_forn = function() {
         },
     };
 }();
+
+
+
+
+
 
 var tabela_ctt = function() {
     var kt_ctt = function() {
@@ -191,14 +295,6 @@ var tabela_ctt = function() {
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
-                // {
-                //     targets:[2,3],
-                //     type:"date-eu",
-                //     render:function(data)
-                //     {
-                //         return data ? moment(data).format('DD/MM/YYYY') : '';
-                //     },
-                // },
                 {
                     targets: [4], // índice da coluna 'ativo'
                     render: function ( data, type, row ) {
@@ -338,9 +434,12 @@ var tabela_aval = function() {
     };
 }();
 
-
 jQuery(document).ready(function() {
     tabela_forn.init()
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+        $($.fn.dataTable.tables(true)).DataTable()
+           .columns.adjust();
+     });
 
     pesq_impacto('#cat_imp')
     pesq_tipo('#cat_tip')
@@ -349,6 +448,12 @@ jQuery(document).ready(function() {
 
     $('#forn_cnpj').mask('00.000.000/0000-00', {reverse: true});
     $('#forn_ctt_tel').mask('(00) 00000-0000');
+
+    $('#kt_forn').on('change', 'input.checkble:first', function() {
+        var isChecked = $(this).prop('checked');
+        // Marca ou desmarca todos os checkboxes nas linhas com base no estado do checkbox "selecionar tudo"
+        $('#kt_forn tbody').find('input.checkble').prop('checked', isChecked);
+    });
 });
 
 function abrir_modal_forn(){
@@ -632,125 +737,48 @@ function ctt_del(forn_ctt_id) {
     });
 };
 
-// function aval_add(){
-//     var url;
+// function gerarexcel() {
+//     // Verifica se pelo menos um checkbox está selecionado
+    
+//     var checkedRows = $('#kt_forn tbody').find('input.checkble:checked').closest('tr'); // Encontra todas as linhas com checkboxes marcados
+//     var selectedIds = [];
+//     console.log(selectedIds)
 
-//     if($('#aval_btn_salvar').val() == 'update'){
-//         url = '/fornecedor/aval_edt/'
-//     }else{
-//         url = '/fornecedor/aval_add/'
+//     // Itera sobre cada linha selecionada para extrair o ID
+//     checkedRows.each(function() {
+//         var rowId = $(this).find('td:last-child').text().trim(); // Captura o ID da última coluna e remove espaços em branco
+//         console.log('ID da linha:', rowId);
+//         selectedIds.push(rowId);
+//     });
+
+//     console.log('IDs selecionados:', selectedIds);
+
+//     // Verifica se algum ID foi selecionado
+//     if (selectedIds.length === 0) {
+//         Swal.fire({
+//             icon: 'warning',
+//             title: 'Atenção!',
+//             text: 'Por favor, selecione pelo menos um item.',
+//             confirmButtonText: 'OK'
+//         });
+//         return;
 //     }
 
-//     var frm_aval = new FormData(document.getElementById('frm_aval'));
-//         frm_aval.append('forn_id',$('#forn_id').val())
-
+//     // Chama a URL 'relatorio_aprov/' passando os IDs selecionados
 //     $.ajax({
-//         method: 'POST',
-//         url: url,
-//         data: frm_aval,
-//         contentType: false,
-//         cache: false,
-//         processData: false,
-//         beforeSend: function() {
-//             Swal.fire({
-//                 title: "Carregando os dados",
-//                 text: "Aguarde ...",
-//                 allowOutsideClick: false,
-//                 allowEscapeKey: false,
-//                 allowEnterKey: false,
-//                 didOpen: function() {            
-//                     Swal.showLoading();
-//                 }
-//             })
+//         url: 'relatorio_aprov/',
+//         type: 'POST',
+//         data: {
+//             selectedIds: selectedIds,
+//             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
 //         },
-//     })
-//     .done(function(data,  textStatus, jqXHR){
-//         if (jqXHR.status === 200 && jqXHR.readyState === 4){
-//             $('#kt_aval').DataTable().ajax.reload();
-//             $('#frm_aval_modal').modal('hide');
-//             Swal.close();
+//         success: function(response) {
+//             // Se a chamada for bem-sucedida, você pode redirecionar o usuário para fazer o download do arquivo Excel
+//             window.location.href = 'relatorio_aprov/';
+//         },
+//         error: function(xhr, status, error) {
+//             // Em caso de erro, você pode lidar com isso aqui
+//             console.error(xhr.responseText);
 //         }
-//     })
-//     .fail(function(jqXHR, textStatus, errorThrown) {
-//         Swal.close();
-//         console.log(jqXHR);
-//         Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
 //     });
 // }
-
-// function aval_edt(forn_aval_id){
-//     $.getJSON('/fornecedor/aval_atb/',
-//         {
-//             forn_aval_id: forn_aval_id
-//         }
-//     ).done(function (item) {
-//         $('#forn_aval_id').val(item.forn_aval_id);
-
-//         $('#cat_aval').empty();
-//             var cat_aval = new Option(item.cat_aval_nome,item.cat_aval,true,true);
-//         $('#cat_aval').append(cat_aval).trigger('change');
-
-//         $('#pes').empty();
-//             var pes = new Option(item.pes_nome,item.pes,true,true);
-//         $('#pes').append(pes).trigger('change');
-
-//         $('#forn_aval_evid').val(item.forn_aval_evid);
-//         $('#forn_aval_dta').val(moment(item.forn_aval_dta).format("YYYY-MM-DD"));
-//         $('#aval_btn_salvar').val('update');
-//         $('#frm_aval_modal').modal('show');
-//     })
-//     .fail(function (jqxhr, settings, ex) {
-//         exibeDialogo(result.responseText, tipoAviso.ERRO);
-//     });
-// }
-
-// function aval_del(forn_aval_id) {
-//     Swal.fire({
-//         title: "Deseja executar esta operação?",
-//         text: "O registro " + forn_aval_id + " será removido permanentemente.",
-//         icon: "warning",
-//         showCancelButton: true,
-//         confirmButtonText: "Ok, desejo remover!",
-//         cancelButtonText: "Não, cancelar!",
-//         reverseButtons: true
-//     }).then(function(result) {
-//         if (result.value) {
-//             var dados = new FormData();
-//                 dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
-//                 dados.append("forn_aval_id", forn_aval_id);
-
-//             $.ajax({
-//                 method: 'POST',
-//                 url: '/fornecedor/aval_del/',
-//                 data:  dados,
-//                 contentType: false,
-//                 cache: false,
-//                 processData: false,
-//                 beforeSend: function() {
-//                     Swal.fire({
-//                         title: "Operação em andamento",
-//                         text: "Aguarde ...",
-//                         allowOutsideClick: false,
-//                         allowEscapeKey: false,
-//                         allowEnterKey: false,
-//                         didOpen: function() {            
-//                             Swal.showLoading();
-//                         }
-//                     })
-//                 },
-//             })
-//             .done(function(data,  textStatus, jqXHR){
-//                 console.log(jqXHR);
-//                 if (jqXHR.status === 200 && jqXHR.readyState === 4){
-//                     $('#kt_aval').DataTable().ajax.reload();
-//                     $('#frm_aval_modal').modal('hide');
-//                     Swal.close();
-//                 }
-//             })
-//             .fail(function(jqXHR, textStatus, errorThrown) {
-//                 Swal.close();
-//                 Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
-//             });
-//         }
-//     });
-// };

@@ -1,3 +1,4 @@
+from vicosafundacoes.models import *
 from django.db import models
 
 class CategoriaPessoa(models.Model):
@@ -100,5 +101,37 @@ class CategoriaAvaliacaoItem(models.Model):
     class Meta:
         managed = False
         db_table = 'categoriaavaliacaoitem'
+
+
+class CategoriaObra(models.Model):
+    cat_obr_id = models.BigAutoField(primary_key=True)
+    cat_obr_nome = models.CharField(max_length=255)
+    cat_obr_cor = models.CharField(max_length=255)
+    cat_obr_ativo = models.BooleanField(default=True)
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_cat_obr')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_cat_obr')
+    
+    
+    class Meta:
+        managed = False
+        db_table = 'categoriaobra'
+
+
+class CategoriaUnidade(models.Model):
+    cat_uni_id = models.BigAutoField(primary_key=True)
+    cat_uni_nome = models.CharField(max_length=255)
+    cat_uni_cor = models.CharField(max_length=255)
+    cat_uni_ativo = models.BooleanField(default=True)
+    usu_alt_dta = models.DateField(auto_now_add=True)
+    usu_cad_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_cat_uni')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_cat_uni')
+
+
+    class Meta:
+        managed = False
+        db_table = 'categoriaunidade'
 
         

@@ -27,8 +27,22 @@ class CategoriaTipoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoriaTipo
         fields = '__all__' 
-        
 
+
+class CategoriaObraSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaObra
+        fields = '__all__'  
+
+
+class CategoriaUnidadeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaUnidade
+        fields = '__all__'  
+
+        
 class CategoriaProdutoSerializer(serializers.ModelSerializer):
 
     class Meta:

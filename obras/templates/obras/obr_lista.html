@@ -1,0 +1,611 @@
+{% extends "vicosafundacoes/base.html" %}
+{% load static %}
+{% block script %}
+<script src="{% static 'obras/js/obr_lista.js'%}"></script>
+<script src="{% static 'categorias/js/pesq_cat_control.js' %}"></script> 
+<script src="{% static 'fornecedor/js/pesq_forn_control.js' %}"></script> 
+<script src="{% static 'assets/js/viewerjs/viewer.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.1.2/jspdf.plugin.autotable.min.js"></script>
+
+
+{% endblock %}
+{% block content %}
+{% csrf_token %}
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Subheader-->
+    <div class="subheader py-2 py-lg-4 subheader-transparent" id="kt_subheader">
+        <div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+            <!--begin::Info-->
+            <div class="d-flex align-items-center flex-wrap mr-1">
+                <!--begin::Page Heading-->
+                <div class="d-flex align-items-baseline mr-5">
+                    <!--begin::Page Title-->
+                    <h5 class="text-dark font-weight-bold my-2 mr-5">Obra</h5>
+                    <!--end::Page Title-->
+                    <!--begin::Breadcrumb-->
+                    <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'vicosafundacoes:index' %}" class="text-muted">Viçosa Fundações</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="" class="text-muted">Obra/Pedidos</a>
+                        </li>
+                    </ul>
+                    <!--end::Breadcrumb-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card card-custom gutter-b bg-white mt-10">
+    <div class="card-body">
+        <button onclick="abrir_modal_obr()" class="btn btn-light-primary btn-icon btn-circle">
+            <i class="flaticon2-add-1"></i>
+        </button>
+        <table class="table table-head-custom" id="kt_obr">
+            <thead>
+                <tr>
+                    <th class="datatable-row datatable-row-even">ID</th>
+                    <th class="datatable-row datatable-row-even">Tipo de Obra</th>
+                    <th class="datatable-row datatable-row-even">proprietário</th>
+                    <th class="datatable-row datatable-row-even">Local</th>
+                    <th class="datatable-row datatable-row-even">Data de início</th>
+                    <th class="datatable-row datatable-row-even">Data de Termino</th>
+                    <th class="datatable-row datatable-row-even">Status</th>
+                    <th class="datatable-row datatable-row-even">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table> 
+    </div>
+</div>
+<div class="modal fade" id="frm_obr_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Obras</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <ul class="nav nav-tabs nav-tabs-line">
+                    <li class="nav-item">
+                        <a id="aba1" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1">Obras</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba2"class="nav-link" data-toggle="tab" href="#kt_tab_pane_2">Pedidos</a>
+                    </li> 
+                </ul>
+                <div class="tab-content mt-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" arial-labelledby="kt_tab_pane_1">   
+                        <form method="post" id="frm_obr">
+                            {% csrf_token %}
+                            <div class="row">
+                                <input type="hidden" id="obr_id" name="obr_id">
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="cat_obr">Tipo de Obra</label>
+                                    <select class="form-control " id="cat_obr" name="cat_obr"></select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="obr_prop">Cliente</label>
+                                    <input type="text" class="form-control" id="obr_prop" name="obr_prop" placeholder="Nome Proprietário" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="obr_loc">Localidade</label>
+                                    <input type="text" class="form-control" id="obr_loc" name="obr_loc" placeholder="Localidade" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold" for="obr_dta_ini">Data de início</label>
+                                    <input type="date" class="form-control" id="obr_dta_ini" name="obr_dta_ini"  required>
+                                </div>
+                            </div>   
+                        </form>
+                    </div> 
+                    <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button onclick="abrir_modal_ped()" class="btn btn-light-primary btn-icon btn-circle">
+                                <i class="flaticon2-add-1"></i>
+                            </button>
+                            <!-- Dropdown Button -->
+                            <div class="dropdown">
+                                <button type="button" id= "export" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="fas fa-file-export">
+                                    </span>Exportar</button>
+                                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    <!--begin::Navigation-->
+                                    <ul class="navi flex-column navi-hover py-2">
+                                        <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Selecione uma Opção:</li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="la la-file-text-o"></i>
+                                                </span>
+                                                <span id="export-csv" class="navi-text">CSV</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="la la-file-pdf-o"></i>
+                                                </span>
+                                                <span id="export-pdf" class="navi-text">PDF</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-head-custom responsive table-responsive table-checkable " id="kt_ped"style="margin-top: 13px !important;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type='checkbox' class="checkble ">
+                                    </th>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Data Do Pedido</th>
+                                    <th class="datatable-row datatable-row-even">Solicitante</th>
+                                    <th class="datatable-row datatable-row-even">Fornecedor</th>
+                                    <th class="datatable-row datatable-row-even">Cnpj</th>
+                                    <th class="datatable-row datatable-row-even">Inscrição Municipal / Estadual</th>
+                                    <th class="datatable-row datatable-row-even">N° Pedido</th>
+                                    <th class="datatable-row datatable-row-even">Produtos</th>
+                                    <th class="datatable-row datatable-row-even">Quantidades</th>
+                                    <th class="datatable-row datatable-row-even">Unidade</th>
+                                    <th class="datatable-row datatable-row-even">Nota Fiscal</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                        <button onclick="obr_add()"type="button" id="obr_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                    </div>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pedido</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true">
+                <ul class="nav nav-tabs nav-tabs-line">
+                    <li class="nav-item">
+                        <a id="aba_ped" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_3">Pedido</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_prod" class="nav-link " data-toggle="tab" href="#kt_tab_pane_4">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_esp" class="nav-link" data-toggle="tab" href="#kt_tab_pane_5">Especificação técnica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_ent" class="nav-link" data-toggle="tab" href="#kt_tab_pane_6">Faturamento/ Dados Entrega</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_ver" class="nav-link" data-toggle="tab" href="#kt_tab_pane_7">Verificação</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="kt_tab_pane_3" role="tabpanel" aria-labelledby="aba_ped">   
+                        <form method="post" id="frm_ped">
+                            {% csrf_token %}
+                            <input type="hidden" id="ped_id" name="ped_id">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="ped_dta">Data Pedido</label>
+                                    <input type="date" class="form-control" id="ped_dta" name="ped_dta" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="cat_pes">Solicitante</label>
+                                    <select class="form-control" id="cat_pes" name="cat_pes"></select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="forn">Fornecedor</label>
+                                    <select class="form-control" id="forn" name="forn"></select>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="toggleInputs2" >
+                            <label for="toggleInputs2" id="labelToggleInputs2">Adicionar NF?</label>
+                            <div id="specificInputs2" style="display: none;">
+                                <div class="form-group row" style="margin-top: 20px;">
+                                    <label class="col-form-label col-lg-3 col-sm-12 text-lg-right">Nota Fiscal:</label>
+                                    <div class="col-lg-4 col-md-9 col-sm-12">
+                                        <div class="dropzone dropzone-default dropzone-primary" id="ped_arq_images">
+                                            <i class="far fa-file-pdf icon-6x"></i>
+                                            <div class="dz-message needsclick">
+                                                <h3 class="dropzone-msg-title">Arraste os arquivos aqui ou clique para fazer upload</h3>
+                                                <span class="dropzone-msg-desc">Poderão ser anexados qualquer tipo de arquivo: imagem, PDF, CSV, etc. </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <input type="checkbox" id="toggleInputs" >
+                        <label for="toggleInputs" id="labelToggleInputs">Adicionar produtos</label>
+                        <div id="specificInputs" style="display: none; border: 2px solid #ccc; padding: 20px; border-radius: 10px; position: relative;">
+                            <form method="post" id="frm_ped_prod">
+                                {% csrf_token %}
+                                <input type="hidden" id="ped_prod_id" name="ped_prod_id">
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="cat_prod">Produto</label>
+                                        <select class="form-control" id="cat_prod" name="cat_prod"></select>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="ped_prod_qtd">Quantidade</label>
+                                        <input type="number" class="form-control" id="ped_prod_qtd" name="ped_prod_qtd" placeholder="Quantidade" required>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="cat_uni">Un. medida</label>
+                                        <select class="form-control" id="cat_uni" name="cat_uni"></select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="ped_prod_desc">Descrição</label>
+                                        <textarea class="form-control" id="ped_prod_desc" name="ped_prod_desc" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group col-md-6 text-right" style="position: absolute; bottom: 20px; right: 20px;">
+                                        <button type="button" class="btn btn-text-warning btn-hover-light-warning font-weight-bold" onclick="limparCampos()">Limpar</button>
+                                        <button onclick="ped_prod_add()" type="button" id="ped_prod_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel" aria-labelledby="aba_ped_prod">
+                        <button onclick="abrir_modal_ped_prod()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_prod">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Produto</th>
+                                    <th class="datatable-row datatable-row-even">Unidade Medida</th>
+                                    <th class="datatable-row datatable-row-even">Quantidade</th>
+                                    <th class="datatable-row datatable-row-even">Descrição</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel" aria-labelledby="aba_ped_esp">
+                        <button onclick="abrir_modal_ped_esp()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_esp">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Especificação</th>
+                                    <th class="datatable-row datatable-row-even">PSQ</th>
+                                    <th class="datatable-row datatable-row-even">FISPQ</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel" aria-labelledby="aba_ped_ent">
+                        <button onclick="abrir_modal_ped_ent()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_ent">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Data da entrega</th>
+                                    <th class="datatable-row datatable-row-even">Rua</th>
+                                    <th class="datatable-row datatable-row-even">Numero</th>
+                                    <th class="datatable-row datatable-row-even">Complemento</th>
+                                    <th class="datatable-row datatable-row-even">Bairro</th>
+                                    <th class="datatable-row datatable-row-even">Cidade</th>
+                                    <th class="datatable-row datatable-row-even">Cep</th>
+                                    <th class="datatable-row datatable-row-even">Obra</th>
+                                    <th class="datatable-row datatable-row-even">Observação</th>
+                                    <th class="datatable-row datatable-row-even">Aprovado por:</th>
+                                    <th class="datatable-row datatable-row-even">Visto:</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel" aria-labelledby="aba_ped_ver">
+                        <button onclick="abrir_modal_ped_ver()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_ver">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Conforme</th>
+                                    <th class="datatable-row datatable-row-even">N° RNC</th>
+                                    <th class="datatable-row datatable-row-even">Descrição Problema </th>
+                                    <th class="datatable-row datatable-row-even">Solução</th>
+                                    <th class="datatable-row datatable-row-even">Responsavel/Ver.</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>                                      
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                <button onclick="ped_add()" type="button" id="ped_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_esp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Especificação Tecnica</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_esp">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_esp_id" name="ped_esp_id">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="ped_esp_obs">Especificação</label>
+                            <textarea class="form-control" id="ped_esp_obs" name="ped_esp_obs" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_psq"></label>
+                            <div class="checkbox-inline">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="ped_esp_psq" name="ped_esp_psq" placeholder="psq" required>
+                                    <span></span>
+                                    PSQ?</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_fispq"></label>
+                            <div class="checkbox-inline">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="ped_esp_fispq" name="ped_esp_fispq" placeholder="fispq" required>
+                                    <span></span>
+                                    FISPQ?</label>
+                            </div>
+                        </div>
+                    </div>                            
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_esp_add()"type="button" id="ped_esp_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_ent_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Faturamento/ Dados de Entrega</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_ent">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_ent_id" name="ped_ent_id">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_rua">Rua</label>
+                            <input type="text" class="form-control" id="ped_ent_rua" name="ped_ent_rua" placeholder="Rua" required>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label class="font-weight-bold" for="ped_ent_num">Numero</label>
+                            <input type="number" class="form-control" id="ped_ent_num" name="ped_ent_num" placeholder="Numero" required>
+                        </div> 
+                        <div class="form-group col-sm-2">
+                            <label class="font-weight-bold" for="ped_ent_rua">Complemento</label>
+                            <input type="text" class="form-control" id="ped_ent_com" name="ped_ent_com" placeholder="Complemento" required>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_bairro">Bairro</label>
+                            <input type="text" class="form-control" id="ped_ent_bairro" name="ped_ent_bairro" placeholder="Quantidade" required>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_cidade">Cidade</label>
+                            <input type="text" class="form-control" id="ped_ent_cidade" name="ped_ent_cidade" placeholder="Cidade" required>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_cep">Cep</label>
+                            <input type="text" class="form-control" id="ped_ent_cep" name="ped_ent_cep" placeholder="CEP" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="ped_ent_dta">Dta.Entrega</label>
+                            <input type="date" class="form-control" id="ped_ent_dta" name="ped_ent_dta"  required>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="cat_pes2">Aprovador por:</label>
+                            <select class="form-control" id="cat_pes2" name="cat_pes2"></select>
+                        </div>
+                    </div>    
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="ped_esp_obs">Observação</label>
+                            <textarea class="form-control" id="ped_ent_obs" name="ped_ent_obs" rows="3"></textarea>
+                        </div>
+                    </div>                           
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_ent_add()"type="button" id="ped_ent_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_ver_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Verificação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_ver">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_ver_id" name="ped_ver_id">
+                        <input type="hidden" id="ped_ver_chk" name="ped_ver_chk" value="{{ item.ped_ver_chk }}">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_psq"></label>
+                            <div class="checkbox-inline">
+                                <label class="radio radio-primary">
+                                    <input type="radio" name="ped_ver_chk_radio" value="true" {% if item.ped_ver_chk %} checked {% endif %}/> Conforme?
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_fispq"></label>
+                            <div class="checkbox-inline">
+                                <label class="radio radio-danger">
+                                    <input type="radio" name="ped_ver_chk_radio" value="false" {% if not item.ped_ver_chk %} checked {% endif %}/> Não Conforme?
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-des-prob-sol">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="ped_ver_desc">Descrição do problema</label>
+                            <textarea class="form-control" id="ped_ver_desc" name="ped_ver_desc" rows="3"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="ped_ver_sol">Solução</label>
+                            <textarea class="form-control" id="ped_ver_sol" name="ped_ver_sol" rows="3"></textarea>
+                        </div>
+                    </div>                          
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_ver_add()"type="button" id="ped_ver_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_prod_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Adicionar Produtos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <ul class="nav nav-tabs nav-tabs-line">
+                    <li class="nav-item">
+                        <a id="aba1" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1">Produto</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="kt_tab_pane_1" role="tabpanel" arial-labelledby="kt_tab_pane_1">   
+                        <form method="post" id="frm_ped_prod_2">
+                            {% csrf_token %}
+                            <div class="row">
+                                <input type="hidden" id="ped_prod_id" name="ped_prod_id">
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label class="font-weight-bold" for="cat_prod2">Produto</label>
+                                    <select class="form-control" id="cat_prod2" name="cat_prod2"></select>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label class="font-weight-bold" for="ped_prod_qtd">Quantidade</label>
+                                    <input type="number" class="form-control" id="ped_prod_qtd" name="ped_prod_qtd" placeholder="Quantidade" required>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label class="font-weight-bold" for="cat_uni2">Un. medida</label>
+                                    <select class="form-control" id="cat_uni2" name="cat_uni2"></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="ped_prod_desc">Descrição</label>
+                                    <textarea class="form-control" id="ped_prod_desc" name="ped_prod_desc" rows="3"></textarea>
+                                </div> 
+                            </div> 
+                        </form>
+                    </div>                  
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                        <button onclick="ped_prod_add_2()"type="button" id="ped_prod_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                    </div>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+{% endblock %} 

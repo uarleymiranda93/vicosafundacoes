@@ -41,14 +41,38 @@ urlpatterns = [
     path('cat_prod_add/', cat_prod_add, name='cat_prod_add'),
     path('cat_prod_edt/', cat_prod_edt, name='cat_prod_edt'),
     path('cat_prod_del/', cat_prod_del, name='cat_prod_del'),
+    
+    path('cat_aval_index', cat_aval_index, name='cat_aval_index'),
+    path('cat_aval_lista/', cat_aval_lista, name='cat_aval_lista'),
+    path('cat_aval_atb/', cat_aval_atb, name='cat_aval_atb'),
+    path('cat_aval_add/', cat_aval_add, name='cat_aval_add'),
+    path('cat_aval_edt/', cat_aval_edt, name='cat_aval_edt'),
+    path('cat_aval_del/', cat_aval_del, name='cat_aval_del'),
 
-
+    path('cat_obr_index', cat_obr_index, name='cat_obr_index'),
+    path('cat_obr_lista/', cat_obr_lista, name='cat_obr_lista'),
+    path('cat_obr_atb/', cat_obr_atb, name='cat_obr_atb'),
+    path('cat_obr_add/', cat_obr_add, name='cat_obr_add'),
+    path('cat_obr_edt/', cat_obr_edt, name='cat_obr_edt'),
+    path('cat_obr_del/', cat_obr_del, name='cat_obr_del'),
+    
+    path('cat_uni_index', cat_uni_index, name='cat_uni_index'),
+    path('cat_uni_lista/', cat_uni_lista, name='cat_uni_lista'),
+    path('cat_uni_atb/', cat_uni_atb, name='cat_uni_atb'),
+    path('cat_uni_add/', cat_uni_add, name='cat_uni_add'),
+    path('cat_uni_edt/', cat_uni_edt, name='cat_uni_edt'),
+    path('cat_uni_del/', cat_uni_del, name='cat_uni_del'),
+    
+    
                         #Url Select2
     path('pesq_impacto/',pesq_impacto, name='pesq_impacto'),
     path('pesq_status/',pesq_status, name='pesq_status'),
     path('pesq_produto/',pesq_produto, name='pesq_produto'),
     path('pesq_tipo/',pesq_tipo, name='pesq_tipo'),
     path('pesq_cat_aval/',pesq_cat_aval, name='pesq_cat_aval'),
-    path('pesq_pessoa/',pesq_pessoa, name='pesq_pessoa')
+    path('pesq_cat_obr/',pesq_cat_obr, name='pesq_cat_obr'),
+    path('pesq_pessoa/',pesq_pessoa, name='pesq_pessoa'),
+    path('pesq_unidade/',pesq_unidade, name='pesq_unidade')
+
 
 ]

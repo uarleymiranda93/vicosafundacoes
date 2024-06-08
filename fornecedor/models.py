@@ -9,6 +9,7 @@ class Fornecedor(models.Model):
     forn_cnpj = models.CharField(max_length=50)
     forn_ies = models.CharField(max_length=50)
     forn_desc=models.CharField(max_length=5000)
+    forn_nf=models.BooleanField(blank=True, null=True)
     cat_imp = models.ForeignKey(CategoriaImpacto, on_delete=models.DO_NOTHING)
     cat_tip = models.ForeignKey(CategoriaTipo, on_delete=models.DO_NOTHING)
     usu_cad_dta = models.DateTimeField(auto_now_add=True)
@@ -70,10 +71,10 @@ class FornecedorAvaliacaoItem(models.Model):
 
 class FornecedorMonitoramento(models.Model):
     forn_monit_id = models.BigAutoField(primary_key=True)
-    forn_monit_qld = models.BooleanField()
-    forn_monit_pont = models.BooleanField()
-    forn_monit_val = models.BooleanField()
-    forn_monit_sup = models.BooleanField()
+    forn_monit_qld = models.BooleanField(blank=True, null=True)
+    forn_monit_pont = models.BooleanField(blank=True, null=True)
+    forn_monit_val = models.BooleanField(blank=True, null=True)
+    forn_monit_sup = models.BooleanField(blank=True, null=True)
     usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_cad_forn_monit')
     usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.DO_NOTHING, related_name='usu_alt_forn_monit')
     usu_cad_dta = models.DateTimeField(auto_now_add=True)

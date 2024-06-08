@@ -56,6 +56,7 @@ class FornecedorAvaliacaoItemSerializer(serializers.ModelSerializer):
 
 
 class FornecedorMonitoramentoSerializer(serializers.ModelSerializer):
+    forn_nome = serializers.CharField(source="forn.forn_nome", read_only="True")
     
     class Meta:
         model = FornecedorMonitoramento
