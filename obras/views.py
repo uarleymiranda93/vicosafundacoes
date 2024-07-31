@@ -51,9 +51,9 @@ def obr_add(request):
         item.obr_prop = request.POST['obr_prop']
         item.obr_loc = request.POST['obr_loc']
         item.obr_dta_ini = datetime.strptime(request.POST['obr_dta_ini'], '%Y-%m-%d')
-        item.cat_sta = CategoriaStatus.objects.get(cat_sta_id=3)
+        item.cat_sta = CategoriaStatus.objects.get(cat_sta_id=1)
         item.cat_obr = CategoriaObra.objects.get(cat_obr_id=request.POST['cat_obr'])
-        item.usu_cad = Pessoa(pes_id = user_session(request))
+        
         item.save()
     except(Exception, DatabaseError) as error:
         print(error)
